@@ -57,6 +57,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [NotificationController::class, 'index'])->name('index');
         Route::post('/{notification}/read', [NotificationController::class, 'markAsRead'])->name('read');
         Route::post('/read-all', [NotificationController::class, 'markAllAsRead'])->name('read.all');
+        Route::delete('/{notification}', [NotificationController::class, 'destroy'])->name('destroy');
+        Route::delete('/read/clear', [NotificationController::class, 'destroyRead'])->name('destroy.read');
     });
 
     // Superadmin only routes

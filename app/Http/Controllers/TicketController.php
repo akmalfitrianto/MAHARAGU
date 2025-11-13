@@ -37,7 +37,7 @@ class TicketController extends Controller
     public function create(AccessPoint $accessPoint)
     {
         $accessPoint->load('room.floor.building');
-        
+
         return view('tickets.create', compact('accessPoint'));
     }
 
@@ -49,6 +49,14 @@ class TicketController extends Controller
             'description' => 'required|string',
         ]);
 
+        $accessPoint = AccessPoint::findOrFail($request->access_point_id);
+
+        if ($accessPoint->status === 'maintenance') {
+            return redirect()->back()
+                ->withErrors(['access_point_id' => 'Access Point ini sedang dalam maintenance. Tidak dapat membuat ticket baru.'])
+                ->withInput();
+        }
+
         $ticket = Ticket::create([
             'access_point_id' => $request->access_point_id,
             'admin_id' => auth()->id(),
@@ -56,6 +64,9 @@ class TicketController extends Controller
             'description' => $request->description,
             'status' => 'open',
         ]);
+
+        $accessPoint = AccessPoint::find($request->access_point_id);
+        $accessPoint->update(['status' => 'maintenance']);
 
         // Create notification for all superadmins
         $superadmins = User::where('role', 'superadmin')->get();
@@ -131,6 +142,11 @@ class TicketController extends Controller
             'resolution_notes' => $request->resolution_notes,
         ]);
 
+        $accessPoint = $ticket->accessPoint;
+        if (!$accessPoint->hasOpenTicket()) {
+            $accessPoint->update(['status' => 'active']);
+        }
+
         Notification::createForTicket($ticket, 'ticket_resolved', $ticket->admin);
 
         return redirect()->back()
@@ -143,6 +159,11 @@ class TicketController extends Controller
             'status' => 'closed',
             'closed_at' => now(),
         ]);
+
+        $accessPoint = $ticket->accessPoint;
+        if (!$accessPoint->hasOpenTicket()) {
+            $accessPoint->update(['status' => 'active']);
+        }
 
         Notification::createForTicket($ticket, 'ticket_closed', $ticket->admin);
 

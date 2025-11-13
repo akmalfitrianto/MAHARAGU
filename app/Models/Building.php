@@ -16,6 +16,7 @@ class Building extends Model
         'svg_path',
         'width',
         'height',
+        'rotation',
         'position_x',
         'position_y',
         'color',

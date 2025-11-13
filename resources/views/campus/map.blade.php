@@ -44,10 +44,16 @@
                             @foreach ($buildings as $building)
                                 <g class="building-group cursor-pointer" data-building-id="{{ $building->id }}"
                                     onclick="showBuildingModal({{ $building->id }})">
-                                    <path d="{{ $building->generateSvgPath() }}" fill="{{ $building->color }}"
-                                        stroke="#14b8a6" stroke-width="2"
-                                        class="building-path transition-all duration-200 hover:fill-teal-400 hover:stroke-teal-600" />
-                                    <!-- Text inside building -->
+
+                                    <!-- Building Shape with Rotation -->
+                                    <g
+                                        @if ($building->rotation > 0) transform="rotate({{ $building->rotation }} {{ $building->position_x + $building->width / 2 }} {{ $building->position_y + $building->height / 2 }})" @endif>
+                                        <path d="{{ $building->generateSvgPath() }}" fill="{{ $building->color }}"
+                                            stroke="#14b8a6" stroke-width="2"
+                                            class="building-path transition-all duration-200 hover:fill-teal-400 hover:stroke-teal-600" />
+                                    </g>
+
+                                    <!-- Text Label -->
                                     <text x="{{ $building->position_x + $building->width / 2 }}"
                                         y="{{ $building->position_y + $building->height / 2 }}" text-anchor="middle"
                                         dominant-baseline="middle" class="text-xs font-bold pointer-events-none select-none"
@@ -141,7 +147,7 @@
                     </button>
                     <a id="viewFloorBtn" href="#"
                         class="flex-1 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 text-center">
-                        Lihat Denah
+                        Lihat Detail
                     </a>
                 </div>
             </div>

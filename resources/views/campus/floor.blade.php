@@ -91,10 +91,12 @@
                                     @foreach ($room->accessPoints as $ap)
                                         <g class="ap-group cursor-pointer" onclick="showAPModal({{ $ap->id }})"
                                             data-ap-id="{{ $ap->id }}">
+
                                             <circle cx="{{ $room->position_x + $ap->position_x }}"
                                                 cy="{{ $room->position_y + $ap->position_y }}" r="8"
                                                 fill="{{ $ap->status_color }}" stroke="#fff" stroke-width="2"
                                                 class="ap-marker transition-all duration-200 hover:r-10" />
+
                                             <circle cx="{{ $room->position_x + $ap->position_x }}"
                                                 cy="{{ $room->position_y + $ap->position_y }}" r="12" fill="transparent"
                                                 class="pointer-events-auto" />
@@ -199,6 +201,11 @@
             const ap = accessPoints.find(a => a.id === apId);
             if (!ap) return;
 
+            if (ap.status === 'maintenance') {
+                alert('Access Point ini sedang dalam maintenance. Tidak dapat membuat ticket baru.');
+                return;
+            }
+
             const statusBadge = {
                 'active': '<span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Aktif</span>',
                 'offline': '<span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">Offline</span>',
@@ -218,11 +225,11 @@
                 <p class="text-sm text-gray-600">{{ $floor->display_name }} - ${ap.room?.name || 'Unknown Room'}</p>
             </div>
             ${ap.notes ? `
-                <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                    <p class="text-sm text-gray-600 mb-1">Catatan</p>
-                    <p class="text-sm text-gray-900">${ap.notes}</p>
-                </div>
-                ` : ''}
+                            <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                <p class="text-sm text-gray-600 mb-1">Catatan</p>
+                                <p class="text-sm text-gray-900">${ap.notes}</p>
+                            </div>
+                            ` : ''}
         </div>
     `;
 

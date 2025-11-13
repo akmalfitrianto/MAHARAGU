@@ -187,20 +187,60 @@
 
                             <!-- Notification Dropdown -->
                             <div x-show="open" @click.away="open = false" x-cloak
-                                class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                                <div class="p-4 border-b border-gray-200">
+                                class="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                <div class="p-4 border-b border-gray-200 flex items-center justify-between">
                                     <h3 class="font-semibold text-gray-900">Notifikasi</h3>
+                                    @if (auth()->user()->unreadNotificationsCount() > 0)
+                                        <button onclick="markAllAsRead()"
+                                            class="text-xs text-teal-600 hover:text-teal-700 font-medium">
+                                            Tandai Semua Dibaca
+                                        </button>
+                                    @endif
                                 </div>
-                                <div class="max-h-96 overflow-y-auto">
+                                <div class="max-h-96 overflow-y-auto" id="notification-list">
                                     @forelse(auth()->user()->notifications()->latest()->take(5)->get() as $notification)
-                                        <a href="{{ route('tickets.show', $notification->ticket_id) }}"
-                                            class="block p-4 hover:bg-gray-50 border-b border-gray-100 {{ $notification->is_unread ? 'bg-blue-50' : '' }}">
-                                            <p class="font-medium text-sm text-gray-900">{{ $notification->title }}
-                                            </p>
-                                            <p class="text-xs text-gray-600 mt-1">{{ $notification->message }}</p>
-                                            <p class="text-xs text-gray-400 mt-1">
-                                                {{ $notification->created_at->diffForHumans() }}</p>
-                                        </a>
+                                        <div id="notification-{{ $notification->id }}"
+                                            class="relative group p-4 hover:bg-gray-50 border-b border-gray-100 {{ $notification->is_unread ? 'bg-blue-50' : '' }}">
+                                            <a href="{{ route('tickets.show', $notification->ticket_id) }}"
+                                                class="block pr-16">
+                                                <p class="font-medium text-sm text-gray-900">
+                                                    {{ $notification->title }}
+                                                    @if ($notification->is_unread)
+                                                        <span
+                                                            class="inline-block w-2 h-2 bg-blue-600 rounded-full ml-1"></span>
+                                                    @endif
+                                                </p>
+                                                <p class="text-xs text-gray-600 mt-1">{{ $notification->message }}</p>
+                                                <p class="text-xs text-gray-400 mt-1">
+                                                    {{ $notification->created_at->diffForHumans() }}
+                                                </p>
+                                            </a>
+
+                                            <!-- Action Buttons -->
+                                            <div
+                                                class="absolute top-4 right-4 flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                @if ($notification->is_unread)
+                                                    <button onclick="markAsRead({{ $notification->id }}, event)"
+                                                        class="p-1.5 text-gray-400 hover:text-teal-600 hover:bg-teal-50 rounded transition"
+                                                        title="Tandai sudah dibaca">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                        </svg>
+                                                    </button>
+                                                @endif
+                                                <button onclick="deleteNotification({{ $notification->id }}, event)"
+                                                    class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition"
+                                                    title="Hapus notifikasi">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
                                     @empty
                                         <div class="p-4 text-center text-gray-500 text-sm">
                                             Tidak ada notifikasi
@@ -253,6 +293,151 @@
 
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    {{--  Notification Actions Script --}}
+    <script>
+        // Get CSRF token
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+        // Mark single notification as read
+        async function markAsRead(notificationId, event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            try {
+                const response = await fetch(`/notifications/${notificationId}/read`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json' // Penting untuk Laravel detect AJAX
+                    }
+                });
+
+                if (response.ok) {
+                    // Remove blue background and dot indicator
+                    const notifElement = document.getElementById(`notification-${notificationId}`);
+                    if (notifElement) {
+                        notifElement.classList.remove('bg-blue-50');
+
+                        // Remove the blue dot
+                        const dotIndicator = notifElement.querySelector('.bg-blue-600');
+                        if (dotIndicator) {
+                            dotIndicator.remove();
+                        }
+
+                        // Remove mark as read button
+                        event.target.closest('button').remove();
+
+                        // Update counter
+                        updateNotificationCounter();
+                    }
+                } else {
+                    console.error('Failed to mark as read:', response.status);
+                    alert('Gagal menandai sebagai dibaca');
+                }
+            } catch (error) {
+                console.error('Error marking notification as read:', error);
+                alert('Terjadi kesalahan. Silakan coba lagi.');
+            }
+        }
+
+        // Delete notification
+        async function deleteNotification(notificationId, event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (!confirm('Hapus notifikasi ini?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/notifications/${notificationId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json' // Penting untuk Laravel detect AJAX
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Remove notification element with animation
+                        const notifElement = document.getElementById(`notification-${notificationId}`);
+                        if (notifElement) {
+                            notifElement.style.opacity = '0';
+                            notifElement.style.transform = 'translateX(100%)';
+                            notifElement.style.transition = 'all 0.3s ease';
+
+                            setTimeout(() => {
+                                notifElement.remove();
+
+                                // Check if no notifications left
+                                const notificationList = document.getElementById('notification-list');
+                                if (notificationList && notificationList.children.length === 0) {
+                                    notificationList.innerHTML = `
+                                        <div class="p-4 text-center text-gray-500 text-sm">
+                                            Tidak ada notifikasi
+                                        </div>
+                                    `;
+                                }
+
+                                // Update counter
+                                updateNotificationCounter();
+                            }, 300);
+                        }
+                    }
+                } else {
+                    console.error('Failed to delete:', response.status);
+                    alert('Gagal menghapus notifikasi');
+                }
+            } catch (error) {
+                console.error('Error deleting notification:', error);
+                alert('Terjadi kesalahan. Silakan coba lagi.');
+            }
+        }
+
+        // Mark all as read
+        async function markAllAsRead() {
+            try {
+                const response = await fetch('/notifications/read-all', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Reload page to update all notifications
+                    window.location.reload();
+                } else {
+                    alert('Gagal menandai semua sebagai dibaca');
+                }
+            } catch (error) {
+                console.error('Error marking all as read:', error);
+                alert('Terjadi kesalahan. Silakan coba lagi.');
+            }
+        }
+
+        // Update notification counter
+        function updateNotificationCounter() {
+            const unreadCount = document.querySelectorAll('#notification-list .bg-blue-50').length;
+            const counterElement = document.querySelector('.absolute.top-0.right-0.bg-red-500');
+
+            if (unreadCount === 0) {
+                if (counterElement) {
+                    counterElement.remove();
+                }
+            } else if (counterElement) {
+                counterElement.textContent = unreadCount;
+            }
+        }
+    </script>
 </body>
 
 </html>

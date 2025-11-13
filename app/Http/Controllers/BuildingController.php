@@ -73,6 +73,7 @@ class BuildingController extends Controller
             'name' => 'required|string|max:255',
             'total_floors' => 'required|integer|min:1|max:20',
             'shape_type' => 'required|in:rectangle,square,l_shape,u_shape,custom',
+            'rotation' => 'nullable|integer|in:0,90,180,270',
             'svg_path' => 'nullable|string',
             'width' => 'required|integer|min:50|max:500',
             'height' => 'required|integer|min:50|max:500',

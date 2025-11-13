@@ -39,4 +39,31 @@ class NotificationController extends Controller
 
         return redirect()->back()->with('success', 'Semua notifikasi ditandai sudah dibaca');
     }
+
+    public function destroy(Notification $notification)
+    {
+        // Check ownership
+        if ($notification->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $notification->delete();
+
+        // Return JSON response untuk AJAX
+        if (request()->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
+
+        return redirect()->back()->with('success', 'Notifikasi berhasil dihapus');
+    }
+
+    public function destroyRead()
+    {
+        $count = auth()->user()
+            ->notifications()
+            ->whereNotNull('read_at')
+            ->delete();
+
+        return redirect()->back()->with('success', "Berhasil menghapus {$count} notifikasi");
+    }
 }
