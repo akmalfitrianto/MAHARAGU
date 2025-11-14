@@ -202,7 +202,12 @@
             if (!ap) return;
 
             if (ap.status === 'maintenance') {
-                alert('Access Point ini sedang dalam maintenance. Tidak dapat membuat ticket baru.');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'AP Sedang Maintenance',
+                    text: 'Access Point ini sedang dalam maintenance. Tidak dapat membuat ticket baru.',
+                    confirmButtonColor: '#14b8a6'
+                });
                 return;
             }
 
@@ -225,11 +230,11 @@
                 <p class="text-sm text-gray-600">{{ $floor->display_name }} - ${ap.room?.name || 'Unknown Room'}</p>
             </div>
             ${ap.notes ? `
-                            <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                                <p class="text-sm text-gray-600 mb-1">Catatan</p>
-                                <p class="text-sm text-gray-900">${ap.notes}</p>
-                            </div>
-                            ` : ''}
+                                <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                    <p class="text-sm text-gray-600 mb-1">Catatan</p>
+                                    <p class="text-sm text-gray-900">${ap.notes}</p>
+                                </div>
+                                ` : ''}
         </div>
     `;
 

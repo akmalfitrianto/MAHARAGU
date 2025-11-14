@@ -14,6 +14,8 @@
             display: none !important;
         }
     </style>
+
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-gray-50 font-sans antialiased">
@@ -437,6 +439,59 @@
                 counterElement.textContent = unreadCount;
             }
         }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Custom Swal Theme
+        const SwalCustom = Swal.mixin({
+            confirmButtonColor: '#14b8a6', // Teal-500
+            cancelButtonColor: '#6b7280', // Gray-500
+            customClass: {
+                popup: 'rounded-xl',
+                confirmButton: 'rounded-lg',
+                cancelButton: 'rounded-lg'
+            }
+        });
+
+        // Success Messages with Custom Theme
+        @if (session('success'))
+            SwalCustom.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                toast: true,
+                position: 'top-end'
+            });
+        @endif
+
+        // Error Messages
+        @if (session('error'))
+            SwalCustom.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#ef4444'
+            });
+        @endif
+
+        // Validation Errors
+        @if ($errors->any())
+            SwalCustom.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                html: `
+                <ul class="text-left text-sm space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <li>• {{ $error }}</li>
+                    @endforeach
+                </ul>
+            `,
+                confirmButtonColor: '#ef4444'
+            });
+        @endif
     </script>
 </body>
 
