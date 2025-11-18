@@ -36,10 +36,10 @@ class BuildingController extends Controller
             'total_floors' => 'required|integer|min:1|max:20',
             'shape_type' => 'required|in:rectangle,square,l_shape,u_shape,custom',
             'svg_path' => 'nullable|string',
-            'width' => 'required|integer|min:50|max:500',
-            'height' => 'required|integer|min:50|max:500',
-            'position_x' => 'required|integer|min:0|max:1200',
-            'position_y' => 'required|integer|min:0|max:600',
+            'width' => 'required|integer|min:0|max:1000',
+            'height' => 'required|integer|min:0|max:1000',
+            'position_x' => 'required|integer|min:0|max:2000',
+            'position_y' => 'required|integer|min:0|max:1200',
             'color' => 'nullable|string',
         ]);
 
@@ -84,10 +84,10 @@ class BuildingController extends Controller
             'shape_type' => 'required|in:rectangle,square,l_shape,u_shape,custom',
             'rotation' => 'nullable|integer|in:0,90,180,270',
             'svg_path' => 'nullable|string',
-            'width' => 'required|integer|min:50|max:500',
-            'height' => 'required|integer|min:50|max:500',
-            'position_x' => 'required|integer|min:0|max:1200',
-            'position_y' => 'required|integer|min:0|max:600',
+            'width' => 'required|integer|min:0|max:1000',
+            'height' => 'required|integer|min:0|max:1000',
+            'position_x' => 'required|integer|min:0|max:2000',
+            'position_y' => 'required|integer|min:0|max:1200',
             'color' => 'nullable|string',
         ]);
 

@@ -31,7 +31,7 @@
                 <!-- SVG Canvas -->
                 <div class="lg:col-span-3 p-6 bg-gray-50">
                     <div class="bg-white rounded-lg border-2 border-gray-300 overflow-hidden" style="height: 600px;">
-                        <svg id="campusMap" viewBox="0 0 1200 600" class="w-full h-full">
+                        <svg id="campusMap" viewBox="0 0 2000 1200" class="w-full h-full">
                             <!-- Grid Background -->
                             <defs>
                                 <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
@@ -42,24 +42,72 @@
 
                             <!-- Buildings -->
                             @foreach ($buildings as $building)
+                                @php
+                                    // Split nama gedung untuk multi-line (max 2 lines)
+                                    $nameWords = explode(' ', $building->name);
+                                    $totalWords = count($nameWords);
+
+                                    if ($totalWords > 2) {
+                                        // Jika lebih dari 2 kata, bagi jadi 2 baris
+                                        $midPoint = ceil($totalWords / 2);
+                                        $line1 = implode(' ', array_slice($nameWords, 0, $midPoint));
+                                        $line2 = implode(' ', array_slice($nameWords, $midPoint));
+                                    } else {
+                                        // Jika 1-2 kata, tampilkan 1 baris
+                                        $line1 = $building->name;
+                                        $line2 = '';
+                                    }
+
+                                    $centerX = $building->position_x + $building->width / 2;
+                                    $centerY = $building->position_y + $building->height / 2;
+
+                                    // Calculate text background size (estimate)
+                                    $textLength = max(strlen($line1), strlen($line2));
+                                    $bgWidth = $textLength * 8 + 20; // Approximate width
+                                    $bgHeight = $line2 ? 40 : 24; // Height based on lines
+                                @endphp
+
                                 <g class="building-group cursor-pointer" data-building-id="{{ $building->id }}"
                                     onclick="showBuildingModal({{ $building->id }})">
 
                                     <!-- Building Shape with Rotation -->
                                     <g
-                                        @if ($building->rotation > 0) transform="rotate({{ $building->rotation }} {{ $building->position_x + $building->width / 2 }} {{ $building->position_y + $building->height / 2 }})" @endif>
+                                        @if ($building->rotation > 0) transform="rotate({{ $building->rotation }} {{ $centerX }} {{ $centerY }})" @endif>
                                         <path d="{{ $building->generateSvgPath() }}" fill="{{ $building->color }}"
                                             stroke="#14b8a6" stroke-width="2"
                                             class="building-path transition-all duration-200 hover:fill-teal-400 hover:stroke-teal-600" />
                                     </g>
 
-                                    <!-- Text Label -->
-                                    <text x="{{ $building->position_x + $building->width / 2 }}"
-                                        y="{{ $building->position_y + $building->height / 2 }}" text-anchor="middle"
-                                        dominant-baseline="middle" class="text-xs font-bold pointer-events-none select-none"
-                                        fill="#0f766e">
-                                        {{ $building->name }}
+                                    <!-- Text Label with Stroke (Multi-line support) -->
+                                    <text text-anchor="middle" font-size="16" font-weight="bold"
+                                        class="pointer-events-none select-none">
+
+                                        @if ($line2)
+                                            <!-- Line 1 (top) -->
+                                            <tspan x="{{ $centerX }}" y="{{ $centerY - 8 }}" stroke="white"
+                                                stroke-width="4" paint-order="stroke" fill="#0f766e">
+                                                {{ $line1 }}
+                                            </tspan>
+
+                                            <!-- Line 2 (bottom) -->
+                                            <tspan x="{{ $centerX }}" y="{{ $centerY + 12 }}" stroke="white"
+                                                stroke-width="4" paint-order="stroke" fill="#0f766e">
+                                                {{ $line2 }}
+                                            </tspan>
+                                        @else
+                                            <!-- Single Line -->
+                                            <tspan x="{{ $centerX }}" y="{{ $centerY }}"
+                                                dominant-baseline="middle" stroke="white" stroke-width="4"
+                                                paint-order="stroke" fill="#0f766e">
+                                                {{ $line1 }}
+                                            </tspan>
+                                        @endif
                                     </text>
+
+                                    <!-- Native SVG Tooltip (on hover) -->
+                                    <title>{{ $building->name }} - {{ $building->total_floors }} Lantai,
+                                        {{ $building->total_rooms }} Ruangan, {{ $building->total_access_points }} AP
+                                    </title>
                                 </g>
                             @endforeach
                         </svg>
@@ -130,7 +178,8 @@
                     <h3 class="text-xl font-bold text-gray-900" id="modalTitle"></h3>
                     <button onclick="closeBuildingModal()" class="text-gray-400 hover:text-gray-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12">
                             </path>
                         </svg>
                     </button>

@@ -172,9 +172,9 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="button"
-                                            onclick="confirmUpdateAPStatus({{ $ap->id }}, '{{ $ap->name }}')"
-                                            class="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600">
-                                            Update Status
+                                            onclick="confirmDeleteAP({{ $ap->id }}, '{{ $ap->name }}')"
+                                            class=" text-red-600 hover:text-red-900 font-medium">
+                                            Hapus
                                         </button>
                                     </form>
                                 </td>
@@ -202,6 +202,55 @@
         </div>
     </div>
     <script>
+        function confirmDeleteAP(apId, apName) {
+            Swal.fire({
+                title: 'Hapus Access Point?',
+                html: `
+                <div class="text-center">
+                    <p class="text-sm text-gray-700 mb-3">Apakah Anda yakin ingin menghapus <strong>${apName}</strong>?</p>
+                    <p class="text-xs text-red-600">Tindakan ini tidak dapat dibatalkan!</p>
+                </div>
+            `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Create and submit delete form
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/admin/access-points/${apId}`;
+
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = '{{ csrf_token() }}';
+                    form.appendChild(csrfInput);
+
+                    const methodInput = document.createElement('input');
+                    methodInput.type = 'hidden';
+                    methodInput.name = '_method';
+                    methodInput.value = 'DELETE';
+                    form.appendChild(methodInput);
+
+                    Swal.fire({
+                        title: 'Menghapus...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
+
         function confirmUpdateAPStatus(apId, apName) {
             Swal.fire({
                 title: 'Update Status AP',

@@ -107,7 +107,7 @@
                                 Lebar (px) <span class="text-red-500">*</span>
                             </label>
                             <input type="number" name="width" x-model.number="width" @input="updatePreview()"
-                                min="50" max="500" required
+                                min="0" max="1000" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                         </div>
                         <div>
@@ -115,7 +115,7 @@
                                 Tinggi (px) <span class="text-red-500">*</span>
                             </label>
                             <input type="number" name="height" x-model.number="height" @input="updatePreview()"
-                                min="50" max="500" required
+                                min="0" max="1000" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                         </div>
                     </div>
@@ -127,7 +127,7 @@
                                 Posisi X <span class="text-red-500">*</span>
                             </label>
                             <input type="number" name="position_x" x-model.number="position_x" @input="updatePreview()"
-                                min="0" max="1200" required
+                                min="0" max="2000" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                         </div>
                         <div>
@@ -135,7 +135,7 @@
                                 Posisi Y <span class="text-red-500">*</span>
                             </label>
                             <input type="number" name="position_y" x-model.number="position_y" @input="updatePreview()"
-                                min="0" max="600" required
+                                min="0" max="1200" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                         </div>
                     </div>
@@ -172,7 +172,7 @@
                         <h2 class="text-lg font-semibold text-gray-900 mb-4">Live Preview</h2>
 
                         <div class="bg-gray-50 rounded-lg border-2 border-gray-300 p-4" style="height: 400px;">
-                            <svg id="previewSvg" viewBox="0 0 1200 600" class="w-full h-full">
+                            <svg id="previewSvg" viewBox="0 0 2000 1200" class="w-full h-full">
                                 <!-- Grid Background -->
                                 <defs>
                                     <pattern id="previewGrid" width="50" height="50"
@@ -265,7 +265,7 @@
                                 x-text="rotation === 0 ? '(Normal)' : rotation === 90 ? '(Ke Kanan)' : rotation === 180 ? '(Terbalik)' : '(Ke Kiri)'"></span>
                         </p>
                         <p><strong>Tips:</strong> Sesuaikan posisi X dan Y untuk menempatkan gedung di denah</p>
-                        <p><strong>Canvas size:</strong> 1200x600 px</p>
+                        <p><strong>Canvas size:</strong> 2000x1200 px</p>
                     </div>
                 </div>
             </div>

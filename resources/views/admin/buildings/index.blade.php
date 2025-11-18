@@ -114,8 +114,8 @@
         function confirmDeleteBuilding(buildingId, buildingName) {
             Swal.fire({
                 title: 'Hapus Gedung?',
-                html: `Apakah Anda yakin ingin menghapus gedung <strong>${buildingName}</strong>?<br><br>
-               <span class="text-red-600 text-sm">⚠️ Semua lantai, ruangan, dan access point akan ikut terhapus!</span>`,
+                html: `Anda yakin ingin menghapus gedung <strong>${buildingName}</strong>?<br><br>
+               <span class="text-red-600 text-sm">Semua lantai, ruangan, dan access point akan ikut terhapus!</span>`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#ef4444',

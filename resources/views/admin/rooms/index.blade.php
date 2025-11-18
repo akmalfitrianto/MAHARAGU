@@ -177,7 +177,7 @@
             Swal.fire({
                 title: 'Hapus Ruangan?',
                 html: `Apakah Anda yakin ingin menghapus ruangan <strong>${roomName}</strong>?<br><br>
-               <span class="text-red-600 text-sm">⚠️ Semua access point di ruangan ini akan ikut terhapus!</span>`,
+               <span class="text-red-600 text-sm">Semua access point di ruangan ini akan ikut terhapus!</span>`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#ef4444',

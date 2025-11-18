@@ -118,7 +118,7 @@
                                 Lebar (px) <span class="text-red-500">*</span>
                             </label>
                             <input type="number" name="width" x-model.number="width" @input="updatePreview()"
-                                min="50" max="500" required value="{{ old('width', $building->width) }}"
+                                min="0" max="1000" required value="{{ old('width', $building->width) }}"
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                         </div>
                         <div>
@@ -126,7 +126,7 @@
                                 Tinggi (px) <span class="text-red-500">*</span>
                             </label>
                             <input type="number" name="height" x-model.number="height" @input="updatePreview()"
-                                min="50" max="500" required value="{{ old('height', $building->height) }}"
+                                min="0" max="1000" required value="{{ old('height', $building->height) }}"
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                         </div>
                     </div>
@@ -138,7 +138,7 @@
                                 Posisi X <span class="text-red-500">*</span>
                             </label>
                             <input type="number" name="position_x" x-model.number="position_x" @input="updatePreview()"
-                                min="0" max="1200" required
+                                min="0" max="2000" required
                                 value="{{ old('position_x', $building->position_x) }}"
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                         </div>
@@ -147,7 +147,7 @@
                                 Posisi Y <span class="text-red-500">*</span>
                             </label>
                             <input type="number" name="position_y" x-model.number="position_y" @input="updatePreview()"
-                                min="0" max="600" required
+                                min="0" max="1200" required
                                 value="{{ old('position_y', $building->position_y) }}"
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                         </div>
@@ -187,7 +187,7 @@
                             <h2 class="text-lg font-semibold text-gray-900 mb-4">Live Preview</h2>
 
                             <div class="bg-gray-50 rounded-lg border-2 border-gray-300 p-4" style="height: 400px;">
-                                <svg id="previewSvg" viewBox="0 0 1200 600" class="w-full h-full">
+                                <svg id="previewSvg" viewBox="0 0 2000 1200" class="w-full h-full">
                                     <!-- Grid Background -->
                                     <defs>
                                         <pattern id="previewGrid" width="50" height="50"
