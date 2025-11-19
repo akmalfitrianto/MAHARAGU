@@ -105,7 +105,7 @@
                         <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
                             Status <span class="text-red-500">*</span>
                         </label>
-                        <select name="status" id="status" x-model="status" required
+                        <select name="status" id="status" x-model="status" @change="updatePreview()" required
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                             <option value="active">Active (Aktif)</option>
                             <option value="offline">Offline (Mati)</option>
@@ -120,7 +120,7 @@
                                 Posisi X <span class="text-red-500">*</span>
                             </label>
                             <input type="number" name="position_x" id="position_x" x-model.number="position_x"
-                                @input="updatePreview()" value="{{ old('position_x', 50) }}" min="0"
+                                value="{{ old('position_x', 50) }}" min="0"
                                 max="{{ $room->width }}" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                             <p class="text-xs text-gray-500 mt-1">Relatif ke ruangan (0 - {{ $room->width }})</p>
@@ -130,7 +130,7 @@
                                 Posisi Y <span class="text-red-500">*</span>
                             </label>
                             <input type="number" name="position_y" id="position_y" x-model.number="position_y"
-                                @input="updatePreview()" value="{{ old('position_y', 50) }}" min="0"
+                                value="{{ old('position_y', 50) }}" min="0"
                                 max="{{ $room->height }}" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                             <p class="text-xs text-gray-500 mt-1">Relatif ke ruangan (0 - {{ $room->height }})</p>
@@ -164,7 +164,7 @@
                                 <ul class="list-disc list-inside space-y-1 text-xs">
                                     <li>Posisi X dan Y adalah koordinat relatif terhadap pojok kiri atas ruangan</li>
                                     <li>Nilai (0, 0) berada di pojok kiri atas ruangan {{ $room->name }}</li>
-                                    <li>Access Point akan muncul sebagai titik berwarna di denah lantai</li>
+                                    <li>Klik dan drag access point di preview untuk memindahkan posisi</li>
                                 </ul>
                             </div>
                         </div>
@@ -186,11 +186,21 @@
                 <!-- Live Preview -->
                 <div class="space-y-6">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-6">
-                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Live Preview</h2>
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-gray-900">Live Preview</h2>
+                            <span class="text-xs px-3 py-1 bg-teal-100 text-teal-700 rounded-full font-medium">
+                                Klik dan Drag AP untuk memindahkan
+                            </span>
+                        </div>
 
                         <div class="bg-gray-50 rounded-lg border-2 border-gray-300 p-4" style="height: 500px;">
                             <svg id="previewCanvas" viewBox="0 0 {{ $room->width + 40 }} {{ $room->height + 40 }}"
-                                class="w-full h-full">
+                                class="w-full h-full"
+                                @mousedown="startDrag($event)" 
+                                @mousemove="drag($event)" 
+                                @mouseup="stopDrag()"
+                                @mouseleave="stopDrag()"
+                                :style="isDragging ? 'cursor: grabbing;' : 'cursor: grab;'">
                                 <!-- Grid Background -->
                                 <defs>
                                     <pattern id="previewGrid" width="20" height="20"
@@ -224,7 +234,8 @@
                                     <g opacity="0.6">
                                         <!-- AP Circle -->
                                         <circle cx="{{ 20 + $ap->position_x }}" cy="{{ 20 + $ap->position_y }}" r="6"
-                                            fill="{{ $ap->status_color }}" stroke="#ffffff" stroke-width="2" />
+                                            fill="{{ $ap->status_color }}" stroke="#ffffff" stroke-width="2" 
+                                            style="pointer-events: none;" />
                                     </g>
                                 @endforeach
 
@@ -232,25 +243,27 @@
                                 <g id="newAccessPoint">
                                     <!-- Pulse Animation Circle -->
                                     <circle :cx="20 + position_x" :cy="20 + position_y" r="15" :fill="statusColor"
-                                        opacity="0.2">
+                                        opacity="0.2" style="pointer-events: none;">
                                         <animate attributeName="r" from="15" to="25" dur="1.5s"
                                             repeatCount="indefinite" />
                                         <animate attributeName="opacity" from="0.2" to="0" dur="1.5s"
                                             repeatCount="indefinite" />
                                     </circle>
 
-                                    <!-- Main AP Circle -->
+                                    <!-- Main AP Circle (draggable) -->
                                     <circle :cx="20 + position_x" :cy="20 + position_y" r="8" :fill="statusColor"
                                         stroke="#ffffff" stroke-width="2" filter="url(#glow)" />
 
                                     <!-- AP Label -->
-                                    <text :x="20 + position_x" :y="20 + position_y + 22" text-anchor="middle"
-                                        class="text-xs font-bold" :fill="statusColor" x-text="name || 'AP Baru'">
+                                    <text :x="20 + position_x" :y="20 + position_y + 18" text-anchor="middle"
+                                        font-size="10" font-weight="bold" :fill="statusColor" x-text="name || 'AP Baru'"
+                                        style="pointer-events: none;">
                                     </text>
 
                                     <!-- Coordinates -->
-                                    <text :x="20 + position_x" :y="20 + position_y + 34" text-anchor="middle"
-                                        class="text-xs" fill="#6b7280" x-text="`(${position_x}, ${position_y})`">
+                                    <text :x="20 + position_x" :y="20 + position_y + 28" text-anchor="middle"
+                                        font-size="8" fill="#6b7280" x-text="`(${position_x}, ${position_y})`"
+                                        style="pointer-events: none;">
                                     </text>
                                 </g>
 
@@ -278,6 +291,17 @@
                                         <span class="text-gray-700">AP Baru: <strong>1</strong></span>
                                     </div>
                                 </div>
+                            </div>
+
+                            <!-- Position Info -->
+                            <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                <p class="text-xs text-blue-800">
+                                    <strong>Position:</strong><br>
+                                    X: <span x-text="position_x"></span> px,
+                                    Y: <span x-text="position_y"></span> px<br>
+                                    <strong>Status:</strong>
+                                    <span x-text="status === 'active' ? 'Active' : status === 'offline' ? 'Offline' : 'Maintenance'"></span>
+                                </p>
                             </div>
 
                             <!-- Status Legend -->
@@ -340,6 +364,16 @@
                 notes: '',
                 statusColor: '#22c55e',
 
+                // Drag state
+                isDragging: false,
+                dragOffsetX: 0,
+                dragOffsetY: 0,
+
+                // Room dimensions
+                roomWidth: {{ $room->width }},
+                roomHeight: {{ $room->height }},
+                margin: 20,
+
                 init() {
                     this.updatePreview();
                 },
@@ -360,6 +394,63 @@
                         default:
                             return '#6b7280'; // gray
                     }
+                },
+
+                startDrag(event) {
+                    const svg = document.getElementById('previewCanvas');
+                    const rect = svg.getBoundingClientRect();
+                    const viewBoxWidth = this.roomWidth + 40;
+                    const viewBoxHeight = this.roomHeight + 40;
+
+                    // Convert mouse position to SVG coordinates
+                    const svgX = ((event.clientX - rect.left) / rect.width) * viewBoxWidth;
+                    const svgY = ((event.clientY - rect.top) / rect.height) * viewBoxHeight;
+
+                    // Calculate AP position in SVG coordinates (with margin offset)
+                    const apCenterX = this.margin + this.position_x;
+                    const apCenterY = this.margin + this.position_y;
+
+                    // Check if click is within AP circle (radius = 8)
+                    const distance = Math.sqrt(
+                        Math.pow(svgX - apCenterX, 2) + 
+                        Math.pow(svgY - apCenterY, 2)
+                    );
+
+                    if (distance <= 8) {
+                        this.isDragging = true;
+                        this.dragOffsetX = svgX - apCenterX;
+                        this.dragOffsetY = svgY - apCenterY;
+                        event.preventDefault();
+                    }
+                },
+
+                drag(event) {
+                    if (!this.isDragging) return;
+
+                    const svg = document.getElementById('previewCanvas');
+                    const rect = svg.getBoundingClientRect();
+                    const viewBoxWidth = this.roomWidth + 40;
+                    const viewBoxHeight = this.roomHeight + 40;
+
+                    // Convert mouse position to SVG coordinates
+                    let svgX = ((event.clientX - rect.left) / rect.width) * viewBoxWidth;
+                    let svgY = ((event.clientY - rect.top) / rect.height) * viewBoxHeight;
+
+                    // Calculate new position with offset (remove margin to get room-relative position)
+                    let newX = svgX - this.dragOffsetX - this.margin;
+                    let newY = svgY - this.dragOffsetY - this.margin;
+
+                    // Constrain to room bounds
+                    newX = Math.max(0, Math.min(newX, this.roomWidth));
+                    newY = Math.max(0, Math.min(newY, this.roomHeight));
+
+                    // Round to nearest integer for cleaner values
+                    this.position_x = Math.round(newX);
+                    this.position_y = Math.round(newY);
+                },
+
+                stopDrag() {
+                    this.isDragging = false;
                 }
             }
         }

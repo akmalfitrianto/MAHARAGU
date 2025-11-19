@@ -51,7 +51,6 @@
                             Nama Gedung <span class="text-red-500">*</span>
                         </label>
                         <input type="text" name="name" x-model="name" required
-                            value="{{ old('name', $building->name) }}"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                     </div>
 
@@ -61,7 +60,7 @@
                             Jumlah Lantai <span class="text-red-500">*</span>
                         </label>
                         <input type="number" name="total_floors" x-model.number="total_floors" min="1"
-                            max="20" required value="{{ old('total_floors', $building->total_floors) }}"
+                            max="20" required
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                         <p class="text-xs text-gray-500 mt-1">
                             Current: {{ $building->total_floors }} lantai. Menambah akan create floor baru, mengurangi akan
@@ -76,16 +75,11 @@
                         </label>
                         <select name="shape_type" x-model="shape_type" @change="updatePreview()" required
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
-                            <option value="rectangle" {{ $building->shape_type === 'rectangle' ? 'selected' : '' }}>
-                                Rectangle (Persegi Panjang)</option>
-                            <option value="square" {{ $building->shape_type === 'square' ? 'selected' : '' }}>Square
-                                (Persegi)</option>
-                            <option value="l_shape" {{ $building->shape_type === 'l_shape' ? 'selected' : '' }}>L-Shape
-                            </option>
-                            <option value="u_shape" {{ $building->shape_type === 'u_shape' ? 'selected' : '' }}>U-Shape
-                            </option>
-                            <option value="custom" {{ $building->shape_type === 'custom' ? 'selected' : '' }}>Custom SVG
-                                Path</option>
+                            <option value="rectangle">Rectangle (Persegi Panjang)</option>
+                            <option value="square">Square (Persegi)</option>
+                            <option value="l_shape">L-Shape</option>
+                            <option value="u_shape">U-Shape</option>
+                            <option value="custom">Custom SVG Path</option>
                         </select>
                     </div>
 
@@ -108,7 +102,7 @@
                             SVG Path <span class="text-red-500">*</span>
                         </label>
                         <textarea name="svg_path" x-model="svg_path" rows="3"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 resize-none font-mono text-sm">{{ old('svg_path', $building->svg_path) }}</textarea>
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 resize-none font-mono text-sm"></textarea>
                     </div>
 
                     <!-- Dimensions -->
@@ -118,7 +112,7 @@
                                 Lebar (px) <span class="text-red-500">*</span>
                             </label>
                             <input type="number" name="width" x-model.number="width" @input="updatePreview()"
-                                min="0" max="1000" required value="{{ old('width', $building->width) }}"
+                                min="0" max="1000" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                         </div>
                         <div>
@@ -126,7 +120,7 @@
                                 Tinggi (px) <span class="text-red-500">*</span>
                             </label>
                             <input type="number" name="height" x-model.number="height" @input="updatePreview()"
-                                min="0" max="1000" required value="{{ old('height', $building->height) }}"
+                                min="0" max="1000" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                         </div>
                     </div>
@@ -137,19 +131,19 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Posisi X <span class="text-red-500">*</span>
                             </label>
-                            <input type="number" name="position_x" x-model.number="position_x" @input="updatePreview()"
-                                min="0" max="2000" required
-                                value="{{ old('position_x', $building->position_x) }}"
+                            <input type="number" name="position_x" x-model.number="position_x" min="0"
+                                max="2000" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
+                            <p class="text-xs text-gray-500 mt-1">Atau drag gedung di preview</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Posisi Y <span class="text-red-500">*</span>
                             </label>
-                            <input type="number" name="position_y" x-model.number="position_y" @input="updatePreview()"
-                                min="0" max="1200" required
-                                value="{{ old('position_y', $building->position_y) }}"
+                            <input type="number" name="position_y" x-model.number="position_y" min="0"
+                                max="1200" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
+                            <p class="text-xs text-gray-500 mt-1">Atau drag gedung di preview</p>
                         </div>
                     </div>
 
@@ -160,10 +154,8 @@
                         </label>
                         <div class="flex items-center space-x-3">
                             <input type="color" name="color" x-model="color" @input="updatePreview()"
-                                value="{{ old('color', $building->color) }}"
                                 class="h-10 w-20 border border-gray-300 rounded cursor-pointer">
                             <input type="text" x-model="color" @input="updatePreview()"
-                                value="{{ old('color', $building->color) }}"
                                 class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                         </div>
                     </div>
@@ -182,101 +174,109 @@
                 </div>
 
                 <!-- Live Preview -->
-                    <div class="space-y-6">
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-6">
-                            <h2 class="text-lg font-semibold text-gray-900 mb-4">Live Preview</h2>
+                <div class="space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-gray-900">Live Preview</h2>
+                            <span class="text-xs px-3 py-1 bg-teal-100 text-teal-700 rounded-full font-medium">
+                                Klik dan Drag untuk memindahkan
+                            </span>
+                        </div>
 
-                            <div class="bg-gray-50 rounded-lg border-2 border-gray-300 p-4" style="height: 400px;">
-                                <svg id="previewSvg" viewBox="0 0 2000 1200" class="w-full h-full">
-                                    <!-- Grid Background -->
-                                    <defs>
-                                        <pattern id="previewGrid" width="50" height="50"
-                                            patternUnits="userSpaceOnUse">
-                                            <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#e5e7eb"
-                                                stroke-width="1" />
-                                        </pattern>
-                                    </defs>
-                                    <rect width="100%" height="100%" fill="url(#previewGrid)" />
+                        <div class="bg-gray-50 rounded-lg border-2 border-gray-300 p-4 relative" style="height: 400px;">
+                            <svg id="previewSvg" viewBox="0 0 2000 1200" class="w-full h-full"
+                                @mousedown="startDrag($event)" @mousemove="drag($event)" @mouseup="stopDrag()"
+                                @mouseleave="stopDrag()" style="cursor: grab;">
+                                <!-- Grid Background -->
+                                <defs>
+                                    <pattern id="previewGrid" width="50" height="50"
+                                        patternUnits="userSpaceOnUse">
+                                        <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#e5e7eb" stroke-width="1" />
+                                    </pattern>
+                                </defs>
+                                <rect width="100%" height="100%" fill="url(#previewGrid)" />
 
-                                    <!-- Other Existing Buildings -->
-                                    @foreach ($existingBuildings as $existingBuilding)
-                                        <g opacity="0.4">
-                                            @if ($existingBuilding->rotation > 0)
-                                                <g
-                                                    transform="rotate({{ $existingBuilding->rotation }} {{ $existingBuilding->position_x + $existingBuilding->width / 2 }} {{ $existingBuilding->position_y + $existingBuilding->height / 2 }})">
-                                                    <path d="{{ $existingBuilding->generateSvgPath() }}" fill="#e0e7eb"
-                                                        stroke="#9ca3af" stroke-width="2" stroke-dasharray="8,4" />
-                                                </g>
-                                            @else
+                                <!-- Other Existing Buildings -->
+                                @foreach ($existingBuildings as $existingBuilding)
+                                    <g opacity="0.4">
+                                        @if ($existingBuilding->rotation > 0)
+                                            <g
+                                                transform="rotate({{ $existingBuilding->rotation }} {{ $existingBuilding->position_x + $existingBuilding->width / 2 }} {{ $existingBuilding->position_y + $existingBuilding->height / 2 }})">
                                                 <path d="{{ $existingBuilding->generateSvgPath() }}" fill="#e0e7eb"
                                                     stroke="#9ca3af" stroke-width="2" stroke-dasharray="8,4" />
-                                            @endif
+                                            </g>
+                                        @else
+                                            <path d="{{ $existingBuilding->generateSvgPath() }}" fill="#e0e7eb"
+                                                stroke="#9ca3af" stroke-width="2" stroke-dasharray="8,4" />
+                                        @endif
 
-                                            <text x="{{ $existingBuilding->position_x + $existingBuilding->width / 2 }}"
-                                                y="{{ $existingBuilding->position_y + $existingBuilding->height / 2 }}"
-                                                text-anchor="middle" class="text-xs" fill="#6b7280" opacity="0.7">
-                                                {{ $existingBuilding->name }}
-                                            </text>
-                                        </g>
-                                    @endforeach
-
-                                    <!-- Current Building Being Edited -->
-                                    <g id="buildingPreview">
-                                        <g id="buildingShape"
-                                            :transform="rotation > 0 ?
-                                                `rotate(${rotation} ${position_x + width/2} ${position_y + height/2})` :
-                                                ''">
-                                            <path id="buildingPath" :d="previewPath" :fill="color"
-                                                stroke="#14b8a6" stroke-width="3" />
-
-                                            <!-- Glow effect -->
-                                            <path :d="previewPath" fill="none" stroke="#14b8a6" stroke-width="6"
-                                                opacity="0.3" />
-                                        </g>
-
-                                        <!-- Label -->
-                                        <text id="buildingLabel" :x="position_x + width / 2" :y="position_y + height / 2"
-                                            text-anchor="middle" class="text-sm font-bold pointer-events-none"
-                                            fill="#0f766e" x-text="name">
+                                        <text x="{{ $existingBuilding->position_x + $existingBuilding->width / 2 }}"
+                                            y="{{ $existingBuilding->position_y + $existingBuilding->height / 2 }}"
+                                            text-anchor="middle" class="text-xs" fill="#6b7280" opacity="0.7"
+                                            style="pointer-events: none;">
+                                            {{ $existingBuilding->name }}
                                         </text>
                                     </g>
-                                </svg>
-                            </div>
+                                @endforeach
 
-                            <!-- Context Info -->
-                            <div class="mt-4 space-y-3">
-                                <!-- Statistics -->
-                                <div
-                                    class="p-3 bg-gradient-to-r from-gray-50 to-teal-50 border border-gray-200 rounded-lg">
-                                    <div class="grid grid-cols-2 gap-2 text-xs">
-                                        <div class="flex items-center">
-                                            <span class="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
-                                            <span class="text-gray-700">Gedung Lain:
-                                                <strong>{{ $existingBuildings->count() }}</strong></span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <span class="w-2 h-2 bg-teal-500 rounded-full mr-2"></span>
-                                            <span class="text-gray-700">Sedang Diedit:
-                                                <strong>{{ $building->name }}</strong></span>
-                                        </div>
-                                    </div>
-                                </div>
+                                <!-- Current Building Being Edited -->
+                                <g id="buildingPreview" :style="isDragging ? 'cursor: grabbing;' : 'cursor: grab;'">
+                                    <g id="buildingShape"
+                                        :transform="rotation > 0 ?
+                                            `rotate(${rotation} ${position_x + width/2} ${position_y + height/2})` :
+                                            ''">
+                                        <path id="buildingPath" :d="previewPath" :fill="color"
+                                            stroke="#14b8a6" stroke-width="3" />
 
-                                <!-- Building Stats -->
-                                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                                    <p class="text-sm font-medium text-blue-900 mb-2">Statistik Gedung:</p>
-                                    <div class="grid grid-cols-2 gap-3 text-xs text-blue-800">
-                                        <div><span class="font-medium">Rotation:</span> <span
-                                                x-text="rotation + '°'"></span></div>
-                                        <div><span class="font-medium">Lantai:</span> {{ $building->total_floors }}</div>
-                                        <div><span class="font-medium">Ruangan:</span> {{ $building->total_rooms }}</div>
-                                        <div><span class="font-medium">Total AP:</span>
-                                            {{ $building->total_access_points }}</div>
-                                    </div>
-                                </div>
-                            </div>
+                                        <!-- Glow effect -->
+                                        <path :d="previewPath" fill="none" stroke="#14b8a6" stroke-width="6"
+                                            opacity="0.3" />
+                                    </g>
+
+                                    <!-- Label -->
+                                    <text id="buildingLabel" :x="position_x + width / 2" :y="position_y + height / 2"
+                                        text-anchor="middle" class="text-sm font-bold" fill="#0f766e"
+                                        style="pointer-events: none;" x-text="name">
+                                    </text>
+                                </g>
+                            </svg>
                         </div>
+
+                        <!-- Context Info -->
+                        <div class="mt-4 space-y-3">
+                            <!-- Statistics -->
+                            <div class="p-3 bg-gradient-to-r from-gray-50 to-teal-50 border border-gray-200 rounded-lg">
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                                        <span class="text-gray-700">Gedung Lain:
+                                            <strong>{{ $existingBuildings->count() }}</strong></span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-teal-500 rounded-full mr-2"></span>
+                                        <span class="text-gray-700">Sedang Diedit:
+                                            <strong>1</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Position & Stats Info -->
+                            <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                <p class="text-xs text-blue-800 mb-2">
+                                    <strong>Position:</strong><br>
+                                    X: <span x-text="position_x"></span> px,
+                                    Y: <span x-text="position_y"></span> px
+                                </p>
+                                <p class="text-xs text-blue-800">
+                                    <strong>Statistik:</strong><br>
+                                    Rotation: <span x-text="rotation + '°'"></span> •
+                                    Lantai: {{ $building->total_floors }} •
+                                    Ruangan: {{ $building->total_rooms }} •
+                                    AP: {{ $building->total_access_points }}
+                                </p>
+                            </div>
                     </div>
+                </div>
             </div>
         </form>
     </div>
@@ -287,7 +287,7 @@
                 name: '{{ old('name', $building->name) }}',
                 total_floors: {{ old('total_floors', $building->total_floors) }},
                 shape_type: '{{ old('shape_type', $building->shape_type) }}',
-                svg_path: '{{ old('svg_path', $building->svg_path) }}',
+                svg_path: `{!! old('svg_path', $building->svg_path) !!}`,
                 width: {{ old('width', $building->width) }},
                 height: {{ old('height', $building->height) }},
                 position_x: {{ old('position_x', $building->position_x) }},
@@ -295,6 +295,11 @@
                 color: '{{ old('color', $building->color) }}',
                 rotation: {{ old('rotation', $building->rotation ?? 0) }},
                 previewPath: '',
+
+                // Drag state
+                isDragging: false,
+                dragOffsetX: 0,
+                dragOffsetY: 0,
 
                 init() {
                     this.updatePreview();
@@ -328,6 +333,55 @@
                                 `M ${x} ${y} L ${x + w} ${y} L ${x + w} ${y + h} L ${x} ${y + h} Z`;
                             break;
                     }
+                },
+
+                startDrag(event) {
+                    const svg = document.getElementById('previewSvg');
+                    const rect = svg.getBoundingClientRect();
+
+                    // Convert mouse position to SVG coordinates
+                    const svgX = ((event.clientX - rect.left) / rect.width) * 2000;
+                    const svgY = ((event.clientY - rect.top) / rect.height) * 1200;
+
+                    // Check if click is inside building bounds
+                    if (svgX >= this.position_x && svgX <= this.position_x + this.width &&
+                        svgY >= this.position_y && svgY <= this.position_y + this.height) {
+
+                        this.isDragging = true;
+                        this.dragOffsetX = svgX - this.position_x;
+                        this.dragOffsetY = svgY - this.position_y;
+
+                        event.preventDefault();
+                    }
+                },
+
+                drag(event) {
+                    if (!this.isDragging) return;
+
+                    const svg = document.getElementById('previewSvg');
+                    const rect = svg.getBoundingClientRect();
+
+                    // Convert mouse position to SVG coordinates
+                    let svgX = ((event.clientX - rect.left) / rect.width) * 2000;
+                    let svgY = ((event.clientY - rect.top) / rect.height) * 1200;
+
+                    // Calculate new position with offset
+                    let newX = svgX - this.dragOffsetX;
+                    let newY = svgY - this.dragOffsetY;
+
+                    // Constrain to canvas bounds
+                    newX = Math.max(0, Math.min(newX, 2000 - this.width));
+                    newY = Math.max(0, Math.min(newY, 1200 - this.height));
+
+                    // Round to nearest integer for cleaner values
+                    this.position_x = Math.round(newX);
+                    this.position_y = Math.round(newY);
+
+                    this.updatePreview();
+                },
+
+                stopDrag() {
+                    this.isDragging = false;
                 }
             }
         }

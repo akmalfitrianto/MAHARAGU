@@ -126,17 +126,19 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Posisi X <span class="text-red-500">*</span>
                             </label>
-                            <input type="number" name="position_x" x-model.number="position_x" @input="updatePreview()"
+                            <input type="number" name="position_x" x-model.number="position_x"
                                 min="0" max="2000" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
+                            <p class="text-xs text-gray-500 mt-1">Atau drag gedung di preview</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Posisi Y <span class="text-red-500">*</span>
                             </label>
-                            <input type="number" name="position_y" x-model.number="position_y" @input="updatePreview()"
+                            <input type="number" name="position_y" x-model.number="position_y"
                                 min="0" max="1200" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
+                            <p class="text-xs text-gray-500 mt-1">Atau drag gedung di preview</p>
                         </div>
                     </div>
 
@@ -169,10 +171,20 @@
                 <!-- Live Preview -->
                 <div class="space-y-6">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-6">
-                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Live Preview</h2>
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-gray-900">Live Preview</h2>
+                            <span class="text-xs px-3 py-1 bg-teal-100 text-teal-700 rounded-full font-medium">
+                                Klik dan Drag untuk memindahkan
+                            </span>
+                        </div>
 
-                        <div class="bg-gray-50 rounded-lg border-2 border-gray-300 p-4" style="height: 400px;">
-                            <svg id="previewSvg" viewBox="0 0 2000 1200" class="w-full h-full">
+                        <div class="bg-gray-50 rounded-lg border-2 border-gray-300 p-4 relative" style="height: 400px;">
+                            <svg id="previewSvg" viewBox="0 0 2000 1200" class="w-full h-full"
+                                @mousedown="startDrag($event)"
+                                @mousemove="drag($event)"
+                                @mouseup="stopDrag()"
+                                @mouseleave="stopDrag()"
+                                style="cursor: grab;">
                                 <!-- Grid Background -->
                                 <defs>
                                     <pattern id="previewGrid" width="50" height="50"
@@ -198,14 +210,15 @@
 
                                         <text x="{{ $existingBuilding->position_x + $existingBuilding->width / 2 }}"
                                             y="{{ $existingBuilding->position_y + $existingBuilding->height / 2 }}"
-                                            text-anchor="middle" class="text-xs" fill="#6b7280" opacity="0.7">
+                                            text-anchor="middle" class="text-xs" fill="#6b7280" opacity="0.7"
+                                            style="pointer-events: none;">
                                             {{ $existingBuilding->name }}
                                         </text>
                                     </g>
                                 @endforeach
 
                                 <!--  New Building -->
-                                <g id="buildingPreview">
+                                <g id="buildingPreview" :style="isDragging ? 'cursor: grabbing;' : 'cursor: grab;'">
                                     <g id="buildingShape"
                                         :transform="rotation > 0 ?
                                             `rotate(${rotation} ${position_x + width/2} ${position_y + height/2})` : ''">
@@ -219,7 +232,8 @@
 
                                     <!-- Label (tidak ikut rotate) -->
                                     <text id="buildingLabel" :x="position_x + width / 2" :y="position_y + height / 2"
-                                        text-anchor="middle" class="text-sm font-bold pointer-events-none" fill="#0f766e"
+                                        text-anchor="middle" class="text-sm font-bold" fill="#0f766e"
+                                        style="pointer-events: none;"
                                         x-text="name || 'Gedung Baru'">
                                     </text>
                                 </g>
@@ -244,10 +258,13 @@
                                 </div>
                             </div>
 
-                            <!-- Rotation Info -->
+                            <!-- Position Info -->
                             <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                                 <p class="text-xs text-blue-800">
-                                    <strong>Preview Rotation:</strong><br>
+                                    <strong>Position:</strong><br>
+                                    X: <span x-text="position_x"></span> px, 
+                                    Y: <span x-text="position_y"></span> px<br>
+                                    <strong>Rotation:</strong>
                                     <span
                                         x-text="rotation + '° - ' + (rotation === 0 ? 'Normal' : rotation === 90 ? 'Ke Kanan' : rotation === 180 ? 'Terbalik' : 'Ke Kiri')"></span>
                                 </p>
@@ -255,22 +272,8 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Info -->
-                <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
-                    <p class="font-medium mb-2">Preview Info:</p>
-                    <div class="space-y-1 text-xs">
-                        <p><strong>Rotation:</strong> <span x-text="rotation + '°'"></span>
-                            <span
-                                x-text="rotation === 0 ? '(Normal)' : rotation === 90 ? '(Ke Kanan)' : rotation === 180 ? '(Terbalik)' : '(Ke Kiri)'"></span>
-                        </p>
-                        <p><strong>Tips:</strong> Sesuaikan posisi X dan Y untuk menempatkan gedung di denah</p>
-                        <p><strong>Canvas size:</strong> 2000x1200 px</p>
-                    </div>
-                </div>
             </div>
-    </div>
-    </form>
+        </form>
     </div>
 
     <script>
@@ -287,6 +290,11 @@
                 color: '#5eead4',
                 rotation: 0,
                 previewPath: '',
+                
+                // Drag state
+                isDragging: false,
+                dragOffsetX: 0,
+                dragOffsetY: 0,
 
                 init() {
                     this.updatePreview();
@@ -320,6 +328,55 @@
                                 `M ${x} ${y} L ${x + w} ${y} L ${x + w} ${y + h} L ${x} ${y + h} Z`;
                             break;
                     }
+                },
+
+                startDrag(event) {
+                    const svg = document.getElementById('previewSvg');
+                    const rect = svg.getBoundingClientRect();
+                    
+                    // Convert mouse position to SVG coordinates
+                    const svgX = ((event.clientX - rect.left) / rect.width) * 2000;
+                    const svgY = ((event.clientY - rect.top) / rect.height) * 1200;
+                    
+                    // Check if click is inside building bounds
+                    if (svgX >= this.position_x && svgX <= this.position_x + this.width &&
+                        svgY >= this.position_y && svgY <= this.position_y + this.height) {
+                        
+                        this.isDragging = true;
+                        this.dragOffsetX = svgX - this.position_x;
+                        this.dragOffsetY = svgY - this.position_y;
+                        
+                        event.preventDefault();
+                    }
+                },
+
+                drag(event) {
+                    if (!this.isDragging) return;
+
+                    const svg = document.getElementById('previewSvg');
+                    const rect = svg.getBoundingClientRect();
+                    
+                    // Convert mouse position to SVG coordinates
+                    let svgX = ((event.clientX - rect.left) / rect.width) * 2000;
+                    let svgY = ((event.clientY - rect.top) / rect.height) * 1200;
+                    
+                    // Calculate new position with offset
+                    let newX = svgX - this.dragOffsetX;
+                    let newY = svgY - this.dragOffsetY;
+                    
+                    // Constrain to canvas bounds
+                    newX = Math.max(0, Math.min(newX, 2000 - this.width));
+                    newY = Math.max(0, Math.min(newY, 1200 - this.height));
+                    
+                    // Round to nearest integer for cleaner values
+                    this.position_x = Math.round(newX);
+                    this.position_y = Math.round(newY);
+                    
+                    this.updatePreview();
+                },
+
+                stopDrag() {
+                    this.isDragging = false;
                 }
             }
         }
