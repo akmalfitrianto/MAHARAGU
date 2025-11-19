@@ -4,184 +4,364 @@
 @section('header', 'Tambah Access Point Baru')
 
 @section('content')
-<div class="max-w-3xl mx-auto">
-    <!-- Breadcrumb -->
-    <nav class="flex mb-6" aria-label="Breadcrumb">
-        <ol class="flex items-center space-x-2 text-sm">
-            <li>
-                <a href="{{ route('admin.buildings.index') }}" class="text-gray-500 hover:text-gray-700">Manajemen Gedung</a>
-            </li>
-            <li>
-                <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                </svg>
-            </li>
-            <li>
-                <a href="{{ route('admin.buildings.show', $room->floor->building) }}" class="text-gray-500 hover:text-gray-700">{{ $room->floor->building->name }}</a>
-            </li>
-            <li>
-                <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                </svg>
-            </li>
-            <li>
-                <a href="{{ route('admin.floors.rooms.index', $room->floor) }}" class="text-gray-500 hover:text-gray-700">{{ $room->floor->display_name }}</a>
-            </li>
-            <li>
-                <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                </svg>
-            </li>
-            <li>
-                <a href="{{ route('admin.rooms.access-points.index', $room) }}" class="text-gray-500 hover:text-gray-700">{{ $room->name }}</a>
-            </li>
-            <li>
-                <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                </svg>
-            </li>
-            <li>
-                <span class="text-gray-900 font-medium">Tambah AP</span>
-            </li>
-        </ol>
-    </nav>
+    <div class="max-w-6xl mx-auto">
+        <!-- Breadcrumb -->
+        <nav class="flex mb-6" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-2 text-sm">
+                <li>
+                    <a href="{{ route('admin.buildings.index') }}" class="text-gray-500 hover:text-gray-700">Manajemen
+                        Gedung</a>
+                </li>
+                <li>
+                    <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </li>
+                <li>
+                    <a href="{{ route('admin.buildings.show', $room->floor->building) }}"
+                        class="text-gray-500 hover:text-gray-700">{{ $room->floor->building->name }}</a>
+                </li>
+                <li>
+                    <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </li>
+                <li>
+                    <a href="{{ route('admin.floors.rooms.index', $room->floor) }}"
+                        class="text-gray-500 hover:text-gray-700">{{ $room->floor->display_name }}</a>
+                </li>
+                <li>
+                    <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </li>
+                <li>
+                    <a href="{{ route('admin.rooms.access-points.index', $room) }}"
+                        class="text-gray-500 hover:text-gray-700">{{ $room->name }}</a>
+                </li>
+                <li>
+                    <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </li>
+                <li>
+                    <span class="text-gray-900 font-medium">Tambah AP</span>
+                </li>
+            </ol>
+        </nav>
 
-    @if($errors->any())
-    <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg">
-        <ul class="list-disc list-inside text-sm">
-            @foreach($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
+        @if ($errors->any())
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg">
+                <ul class="list-disc list-inside text-sm">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-    <!-- Room Info Card -->
-    <div class="bg-gradient-to-r from-teal-500 to-green-600 rounded-xl shadow-lg p-6 text-white mb-6">
-        <h2 class="text-xl font-bold mb-2">{{ $room->name }}</h2>
-        <div class="flex items-center space-x-6 text-sm text-teal-100">
-            <span>{{ $room->floor->building->name }}</span>
-            <span>{{ $room->floor->display_name }}</span>
-            <span>{{ $room->width }} x {{ $room->height }} px</span>
+        <!-- Room Info Card -->
+        <div class="bg-gradient-to-r from-teal-500 to-green-600 rounded-xl shadow-lg p-6 text-white mb-6">
+            <h2 class="text-xl font-bold mb-2">{{ $room->name }}</h2>
+            <div class="flex items-center space-x-6 text-sm text-teal-100">
+                <span>{{ $room->floor->building->name }}</span>
+                <span>{{ $room->floor->display_name }}</span>
+                <span>{{ $room->width }} x {{ $room->height }} px</span>
+            </div>
         </div>
-    </div>
 
-    <!-- Form Card -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h2 class="text-lg font-semibold text-gray-900 mb-6">Form Access Point Baru</h2>
-
-        <form method="POST" action="{{ route('admin.rooms.access-points.store', $room) }}" class="space-y-6">
+        <form method="POST" action="{{ route('admin.rooms.access-points.store', $room) }}" class="space-y-6"
+            x-data="accessPointForm()">
             @csrf
 
-            <!-- Name -->
-            <div>
-                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                    Nama Access Point <span class="text-red-500">*</span>
-                </label>
-                <input type="text" 
-                       name="name" 
-                       id="name"
-                       value="{{ old('name') }}"
-                       required
-                       placeholder="Contoh: AP-GedungA-L1-R1-01"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
-                <p class="text-xs text-gray-500 mt-1">
-                    Format rekomendasi: AP-NamaGedung-Lantai-NamaRuangan-Nomor
-                </p>
-            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Form Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6">
+                    <h2 class="text-lg font-semibold text-gray-900">Form Access Point Baru</h2>
 
-            <!-- Status -->
-            <div>
-                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
-                    Status <span class="text-red-500">*</span>
-                </label>
-                <select name="status" 
-                        id="status"
-                        required
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
-                    <option value="active" {{ old('status') === 'active' ? 'selected' : '' }}>Active (Aktif)</option>
-                    <option value="offline" {{ old('status') === 'offline' ? 'selected' : '' }}>Offline (Mati)</option>
-                    <option value="maintenance" {{ old('status') === 'maintenance' ? 'selected' : '' }}>Maintenance (Pemeliharaan)</option>
-                </select>
-            </div>
+                    <!-- Name -->
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                            Nama Access Point <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="name" id="name" x-model="name" value="{{ old('name') }}"
+                            required placeholder="Contoh: AP-GedungA-L1-R1-01"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
+                        <p class="text-xs text-gray-500 mt-1">
+                            Format rekomendasi: AP-NamaGedung-Lantai-NamaRuangan-Nomor
+                        </p>
+                    </div>
 
-            <!-- Position -->
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label for="position_x" class="block text-sm font-medium text-gray-700 mb-2">
-                        Posisi X <span class="text-red-500">*</span>
-                    </label>
-                    <input type="number" 
-                           name="position_x" 
-                           id="position_x"
-                           value="{{ old('position_x', 50) }}"
-                           min="0"
-                           max="{{ $room->width }}"
-                           required
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
-                    <p class="text-xs text-gray-500 mt-1">Relatif ke ruangan (0 - {{ $room->width }})</p>
+                    <!-- Status -->
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
+                            Status <span class="text-red-500">*</span>
+                        </label>
+                        <select name="status" id="status" x-model="status" required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
+                            <option value="active">Active (Aktif)</option>
+                            <option value="offline">Offline (Mati)</option>
+                            <option value="maintenance">Maintenance (Pemeliharaan)</option>
+                        </select>
+                    </div>
+
+                    <!-- Position -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="position_x" class="block text-sm font-medium text-gray-700 mb-2">
+                                Posisi X <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" name="position_x" id="position_x" x-model.number="position_x"
+                                @input="updatePreview()" value="{{ old('position_x', 50) }}" min="0"
+                                max="{{ $room->width }}" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
+                            <p class="text-xs text-gray-500 mt-1">Relatif ke ruangan (0 - {{ $room->width }})</p>
+                        </div>
+                        <div>
+                            <label for="position_y" class="block text-sm font-medium text-gray-700 mb-2">
+                                Posisi Y <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" name="position_y" id="position_y" x-model.number="position_y"
+                                @input="updatePreview()" value="{{ old('position_y', 50) }}" min="0"
+                                max="{{ $room->height }}" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
+                            <p class="text-xs text-gray-500 mt-1">Relatif ke ruangan (0 - {{ $room->height }})</p>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div>
+                        <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">
+                            Catatan
+                            <span class="text-gray-500 font-normal">(Opsional)</span>
+                        </label>
+                        <textarea name="notes" id="notes" x-model="notes" rows="4"
+                            placeholder="Catatan tambahan tentang Access Point ini..."
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 resize-none">{{ old('notes') }}</textarea>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Contoh: Dekat pintu masuk, Di pojok ruangan, Perlu pengecekan berkala, dll.
+                        </p>
+                    </div>
+
+                    <!-- Info Box -->
+                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div class="flex">
+                            <svg class="w-5 h-5 text-blue-600 mt-0.5 mr-3" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div class="text-sm text-blue-800">
+                                <p class="font-medium mb-1">Informasi Posisi:</p>
+                                <ul class="list-disc list-inside space-y-1 text-xs">
+                                    <li>Posisi X dan Y adalah koordinat relatif terhadap pojok kiri atas ruangan</li>
+                                    <li>Nilai (0, 0) berada di pojok kiri atas ruangan {{ $room->name }}</li>
+                                    <li>Access Point akan muncul sebagai titik berwarna di denah lantai</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-3 pt-4 border-t border-gray-200">
+                        <a href="{{ route('admin.rooms.access-points.index', $room) }}"
+                            class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 text-center transition">
+                            Batal
+                        </a>
+                        <button type="submit"
+                            class="flex-1 px-6 py-3 bg-teal-500 text-white font-medium rounded-lg hover:bg-teal-600 transition shadow-lg hover:shadow-xl">
+                            Simpan Access Point
+                        </button>
+                    </div>
                 </div>
-                <div>
-                    <label for="position_y" class="block text-sm font-medium text-gray-700 mb-2">
-                        Posisi Y <span class="text-red-500">*</span>
-                    </label>
-                    <input type="number" 
-                           name="position_y" 
-                           id="position_y"
-                           value="{{ old('position_y', 50) }}"
-                           min="0"
-                           max="{{ $room->height }}"
-                           required
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
-                    <p class="text-xs text-gray-500 mt-1">Relatif ke ruangan (0 - {{ $room->height }})</p>
-                </div>
-            </div>
 
-            <!-- Notes -->
-            <div>
-                <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">
-                    Catatan
-                    <span class="text-gray-500 font-normal">(Opsional)</span>
-                </label>
-                <textarea name="notes" 
-                          id="notes"
-                          rows="4"
-                          placeholder="Catatan tambahan tentang Access Point ini..."
-                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 resize-none">{{ old('notes') }}</textarea>
-                <p class="text-xs text-gray-500 mt-1">
-                    Contoh: Dekat pintu masuk, Di pojok ruangan, Perlu pengecekan berkala, dll.
-                </p>
-            </div>
+                <!-- Live Preview -->
+                <div class="space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Live Preview</h2>
 
-            <!-- Info Box -->
-            <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <div class="flex">
-                    <svg class="w-5 h-5 text-blue-600 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <div class="text-sm text-blue-800">
-                        <p class="font-medium mb-1">Informasi Posisi:</p>
-                        <ul class="list-disc list-inside space-y-1 text-xs">
-                            <li>Posisi X dan Y adalah koordinat relatif terhadap pojok kiri atas ruangan</li>
-                            <li>Nilai (0, 0) berada di pojok kiri atas ruangan {{ $room->name }}</li>
-                            <li>Access Point akan muncul sebagai titik berwarna di denah lantai</li>
-                        </ul>
+                        <div class="bg-gray-50 rounded-lg border-2 border-gray-300 p-4" style="height: 500px;">
+                            <svg id="previewCanvas" viewBox="0 0 {{ $room->width + 40 }} {{ $room->height + 40 }}"
+                                class="w-full h-full">
+                                <!-- Grid Background -->
+                                <defs>
+                                    <pattern id="previewGrid" width="20" height="20"
+                                        patternUnits="userSpaceOnUse">
+                                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e5e7eb" stroke-width="0.5" />
+                                    </pattern>
+
+                                    <!-- Glow filter for AP -->
+                                    <filter id="glow">
+                                        <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+                                        <feMerge>
+                                            <feMergeNode in="coloredBlur" />
+                                            <feMergeNode in="SourceGraphic" />
+                                        </feMerge>
+                                    </filter>
+                                </defs>
+                                <rect width="100%" height="100%" fill="url(#previewGrid)" />
+
+                                <!-- Room Shape (posisi relatif dimulai dari 20,20 untuk margin) -->
+                                <path
+                                    d="M 20 20 L {{ 20 + $room->width }} 20 L {{ 20 + $room->width }} {{ 20 + $room->height }} L 20 {{ 20 + $room->height }} Z"
+                                    fill="{{ $room->color }}" stroke="#6b7280" stroke-width="2" opacity="0.7" />
+
+                                <!-- Room Border for clarity -->
+                                <rect x="20" y="20" width="{{ $room->width }}" height="{{ $room->height }}"
+                                    fill="none" stroke="#14b8a6" stroke-width="2" stroke-dasharray="5,5"
+                                    opacity="0.5" />
+
+                                <!-- Existing Access Points -->
+                                @foreach ($room->accessPoints as $ap)
+                                    <g opacity="0.6">
+                                        <!-- AP Circle -->
+                                        <circle cx="{{ 20 + $ap->position_x }}" cy="{{ 20 + $ap->position_y }}" r="6"
+                                            fill="{{ $ap->status_color }}" stroke="#ffffff" stroke-width="2" />
+                                    </g>
+                                @endforeach
+
+                                <!-- New Access Point (Live Preview) -->
+                                <g id="newAccessPoint">
+                                    <!-- Pulse Animation Circle -->
+                                    <circle :cx="20 + position_x" :cy="20 + position_y" r="15" :fill="statusColor"
+                                        opacity="0.2">
+                                        <animate attributeName="r" from="15" to="25" dur="1.5s"
+                                            repeatCount="indefinite" />
+                                        <animate attributeName="opacity" from="0.2" to="0" dur="1.5s"
+                                            repeatCount="indefinite" />
+                                    </circle>
+
+                                    <!-- Main AP Circle -->
+                                    <circle :cx="20 + position_x" :cy="20 + position_y" r="8" :fill="statusColor"
+                                        stroke="#ffffff" stroke-width="2" filter="url(#glow)" />
+
+                                    <!-- AP Label -->
+                                    <text :x="20 + position_x" :y="20 + position_y + 22" text-anchor="middle"
+                                        class="text-xs font-bold" :fill="statusColor" x-text="name || 'AP Baru'">
+                                    </text>
+
+                                    <!-- Coordinates -->
+                                    <text :x="20 + position_x" :y="20 + position_y + 34" text-anchor="middle"
+                                        class="text-xs" fill="#6b7280" x-text="`(${position_x}, ${position_y})`">
+                                    </text>
+                                </g>
+
+                                <!-- Coordinate Axes Labels -->
+                                <text x="10" y="15" class="text-xs font-medium" fill="#6b7280">0,0</text>
+                                <text :x="20 + {{ $room->width }}" y="15" class="text-xs"
+                                    fill="#6b7280">{{ $room->width }},0</text>
+                                <text x="10" :y="20 + {{ $room->height }}" class="text-xs"
+                                    fill="#6b7280">0,{{ $room->height }}</text>
+                            </svg>
+                        </div>
+
+                        <!-- Context Info -->
+                        <div class="mt-4 space-y-3">
+                            <!-- Statistics -->
+                            <div class="p-3 bg-gradient-to-r from-gray-50 to-teal-50 border border-gray-200 rounded-lg">
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                                        <span class="text-gray-700">AP Existing:
+                                            <strong>{{ $room->accessPoints->count() }}</strong></span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-teal-500 rounded-full mr-2"></span>
+                                        <span class="text-gray-700">AP Baru: <strong>1</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Status Legend -->
+                            <div class="p-4 bg-white border border-gray-200 rounded-lg">
+                                <p class="text-xs font-medium text-gray-700 mb-2">Status Legend:</p>
+                                <div class="grid grid-cols-3 gap-2 text-xs">
+                                    <div class="flex items-center">
+                                        <span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span>
+                                        <span class="text-gray-600">Active</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-3 h-3 rounded-full bg-red-500 mr-2"></span>
+                                        <span class="text-gray-600">Offline</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></span>
+                                        <span class="text-gray-600">Maintenance</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Current Status Display -->
+                            <div class="p-4 border rounded-lg"
+                                :class="{
+                                    'bg-green-50 border-green-200': status === 'active',
+                                    'bg-red-50 border-red-200': status === 'offline',
+                                    'bg-yellow-50 border-yellow-200': status === 'maintenance'
+                                }">
+                                <p class="text-xs font-medium mb-1"
+                                    :class="{
+                                        'text-green-800': status === 'active',
+                                        'text-red-800': status === 'offline',
+                                        'text-yellow-800': status === 'maintenance'
+                                    }">
+                                    Current Status:
+                                </p>
+                                <p class="text-sm font-bold"
+                                    :class="{
+                                        'text-green-900': status === 'active',
+                                        'text-red-900': status === 'offline',
+                                        'text-yellow-900': status === 'maintenance'
+                                    }"
+                                    x-text="status === 'active' ? 'Active (Aktif)' : status === 'offline' ? 'Offline (Mati)' : 'Maintenance'">
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Action Buttons -->
-            <div class="flex space-x-3 pt-4 border-t border-gray-200">
-                <a href="{{ route('admin.rooms.access-points.index', $room) }}" 
-                   class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 text-center transition">
-                    Batal
-                </a>
-                <button type="submit"
-                        class="flex-1 px-6 py-3 bg-teal-500 text-white font-medium rounded-lg hover:bg-teal-600 transition shadow-lg hover:shadow-xl">
-                    Simpan Access Point
-                </button>
-            </div>
         </form>
     </div>
-</div>
+
+    <script>
+        function accessPointForm() {
+            return {
+                name: '',
+                status: 'active',
+                position_x: {{ old('position_x', 50) }},
+                position_y: {{ old('position_y', 50) }},
+                notes: '',
+                statusColor: '#22c55e',
+
+                init() {
+                    this.updatePreview();
+                },
+
+                updatePreview() {
+                    // Update status color based on selection
+                    this.statusColor = this.getStatusColor();
+                },
+
+                getStatusColor() {
+                    switch (this.status) {
+                        case 'active':
+                            return '#22c55e'; // green
+                        case 'offline':
+                            return '#ef4444'; // red
+                        case 'maintenance':
+                            return '#eab308'; // yellow
+                        default:
+                            return '#6b7280'; // gray
+                    }
+                }
+            }
+        }
+    </script>
 @endsection
