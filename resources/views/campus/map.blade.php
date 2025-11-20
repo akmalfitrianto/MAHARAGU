@@ -31,7 +31,7 @@
                 <!-- SVG Canvas -->
                 <div class="lg:col-span-3 p-6 bg-gray-50">
                     <div class="bg-white rounded-lg border-2 border-gray-300 overflow-hidden" style="height: 600px;">
-                        <svg id="campusMap" viewBox="0 0 2000 1200" class="w-full h-full">
+                        <svg id="campusMap" viewBox="0 0 1800 1200" class="w-full h-full">
                             <!-- Grid Background -->
                             <defs>
                                 <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">

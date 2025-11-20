@@ -132,7 +132,7 @@
                                 Posisi X <span class="text-red-500">*</span>
                             </label>
                             <input type="number" name="position_x" x-model.number="position_x" min="0"
-                                max="2000" required
+                                max="1800" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                             <p class="text-xs text-gray-500 mt-1">Atau drag gedung di preview</p>
                         </div>
@@ -184,7 +184,7 @@
                         </div>
 
                         <div class="bg-gray-50 rounded-lg border-2 border-gray-300 p-4 relative" style="height: 400px;">
-                            <svg id="previewSvg" viewBox="0 0 2000 1200" class="w-full h-full"
+                            <svg id="previewSvg" viewBox="0 0 1800 1200" class="w-full h-full"
                                 @mousedown="startDrag($event)" @mousemove="drag($event)" @mouseup="stopDrag()"
                                 @mouseleave="stopDrag()" style="cursor: grab;">
                                 <!-- Grid Background -->
@@ -340,7 +340,7 @@
                     const rect = svg.getBoundingClientRect();
 
                     // Convert mouse position to SVG coordinates
-                    const svgX = ((event.clientX - rect.left) / rect.width) * 2000;
+                    const svgX = ((event.clientX - rect.left) / rect.width) * 1800;
                     const svgY = ((event.clientY - rect.top) / rect.height) * 1200;
 
                     // Check if click is inside building bounds
@@ -362,7 +362,7 @@
                     const rect = svg.getBoundingClientRect();
 
                     // Convert mouse position to SVG coordinates
-                    let svgX = ((event.clientX - rect.left) / rect.width) * 2000;
+                    let svgX = ((event.clientX - rect.left) / rect.width) * 1800;
                     let svgY = ((event.clientY - rect.top) / rect.height) * 1200;
 
                     // Calculate new position with offset
@@ -370,7 +370,7 @@
                     let newY = svgY - this.dragOffsetY;
 
                     // Constrain to canvas bounds
-                    newX = Math.max(0, Math.min(newX, 2000 - this.width));
+                    newX = Math.max(0, Math.min(newX, 1800 - this.width));
                     newY = Math.max(0, Math.min(newY, 1200 - this.height));
 
                     // Round to nearest integer for cleaner values

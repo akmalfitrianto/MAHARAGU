@@ -38,7 +38,7 @@ class BuildingController extends Controller
             'svg_path' => 'nullable|string',
             'width' => 'required|integer|min:0|max:1000',
             'height' => 'required|integer|min:0|max:1000',
-            'position_x' => 'required|integer|min:0|max:2000',
+            'position_x' => 'required|integer|min:0|max:1800',
             'position_y' => 'required|integer|min:0|max:1200',
             'color' => 'nullable|string',
         ]);
@@ -86,7 +86,7 @@ class BuildingController extends Controller
             'svg_path' => 'nullable|string',
             'width' => 'required|integer|min:0|max:1000',
             'height' => 'required|integer|min:0|max:1000',
-            'position_x' => 'required|integer|min:0|max:2000',
+            'position_x' => 'required|integer|min:0|max:1800',
             'position_y' => 'required|integer|min:0|max:1200',
             'color' => 'nullable|string',
         ]);
