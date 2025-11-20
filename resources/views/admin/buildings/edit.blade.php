@@ -187,32 +187,37 @@
                             <svg id="previewSvg" viewBox="0 0 1800 1200" class="w-full h-full"
                                 @mousedown="startDrag($event)" @mousemove="drag($event)" @mouseup="stopDrag()"
                                 @mouseleave="stopDrag()" style="cursor: grab;">
-                                <!-- Grid Background -->
                                 <defs>
+                                    <!-- Grid Pattern -->
                                     <pattern id="previewGrid" width="50" height="50"
                                         patternUnits="userSpaceOnUse">
                                         <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#e5e7eb" stroke-width="1" />
                                     </pattern>
                                 </defs>
-                                <rect width="100%" height="100%" fill="url(#previewGrid)" />
+
+                                <!-- Background Image -->
+                                <image href="{{ asset('images/background-map.png') }}" x="0" y="0" width="1800"
+                                    height="1200" preserveAspectRatio="xMidYMid slice" opacity="0.5" />
 
                                 <!-- Other Existing Buildings -->
                                 @foreach ($existingBuildings as $existingBuilding)
-                                    <g opacity="0.4">
+                                    <g opacity="0.5">
                                         @if ($existingBuilding->rotation > 0)
                                             <g
                                                 transform="rotate({{ $existingBuilding->rotation }} {{ $existingBuilding->position_x + $existingBuilding->width / 2 }} {{ $existingBuilding->position_y + $existingBuilding->height / 2 }})">
-                                                <path d="{{ $existingBuilding->generateSvgPath() }}" fill="#e0e7eb"
-                                                    stroke="#9ca3af" stroke-width="2" stroke-dasharray="8,4" />
+                                                <path d="{{ $existingBuilding->generateSvgPath() }}"
+                                                    fill="{{ $existingBuilding->color }}" stroke="#000000"
+                                                    stroke-width="2" stroke-dasharray="8,4" />
                                             </g>
                                         @else
-                                            <path d="{{ $existingBuilding->generateSvgPath() }}" fill="#e0e7eb"
-                                                stroke="#9ca3af" stroke-width="2" stroke-dasharray="8,4" />
+                                            <path d="{{ $existingBuilding->generateSvgPath() }}"
+                                                fill="{{ $existingBuilding->color }}" stroke="#000000" stroke-width="2"
+                                                stroke-dasharray="8,4" />
                                         @endif
 
                                         <text x="{{ $existingBuilding->position_x + $existingBuilding->width / 2 }}"
                                             y="{{ $existingBuilding->position_y + $existingBuilding->height / 2 }}"
-                                            text-anchor="middle" class="text-xs" fill="#6b7280" opacity="0.7"
+                                            text-anchor="middle" class="text-xs" fill="#000000" opacity="0.7"
                                             style="pointer-events: none;">
                                             {{ $existingBuilding->name }}
                                         </text>
@@ -235,8 +240,9 @@
 
                                     <!-- Label -->
                                     <text id="buildingLabel" :x="position_x + width / 2" :y="position_y + height / 2"
-                                        text-anchor="middle" class="text-sm font-bold" fill="#0f766e"
-                                        style="pointer-events: none;" x-text="name">
+                                        text-anchor="middle" class="text-sm font-bold" fill="#0f766e" stroke="white"
+                                        stroke-width="3" paint-order="stroke" style="pointer-events: none;"
+                                        x-text="name">
                                     </text>
                                 </g>
                             </svg>
@@ -275,9 +281,9 @@
                                     AP: {{ $building->total_access_points }}
                                 </p>
                             </div>
+                        </div>
                     </div>
                 </div>
-            </div>
         </form>
     </div>
 
@@ -337,11 +343,14 @@
 
                 startDrag(event) {
                     const svg = document.getElementById('previewSvg');
-                    const rect = svg.getBoundingClientRect();
 
-                    // Convert mouse position to SVG coordinates
-                    const svgX = ((event.clientX - rect.left) / rect.width) * 1800;
-                    const svgY = ((event.clientY - rect.top) / rect.height) * 1200;
+                    const pt = svg.createSVGPoint();
+                    pt.x = event.clientX;
+                    pt.y = event.clientY;
+
+                    const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+                    const svgX = svgP.x;
+                    const svgY = svgP.y;
 
                     // Check if click is inside building bounds
                     if (svgX >= this.position_x && svgX <= this.position_x + this.width &&
@@ -359,11 +368,14 @@
                     if (!this.isDragging) return;
 
                     const svg = document.getElementById('previewSvg');
-                    const rect = svg.getBoundingClientRect();
 
-                    // Convert mouse position to SVG coordinates
-                    let svgX = ((event.clientX - rect.left) / rect.width) * 1800;
-                    let svgY = ((event.clientY - rect.top) / rect.height) * 1200;
+                    const pt = svg.createSVGPoint();
+                    pt.x = event.clientX;
+                    pt.y = event.clientY;
+
+                    const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+                    let svgX = svgP.x;
+                    let svgY = svgP.y;
 
                     // Calculate new position with offset
                     let newX = svgX - this.dragOffsetX;

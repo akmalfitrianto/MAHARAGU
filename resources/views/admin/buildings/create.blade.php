@@ -126,8 +126,8 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Posisi X <span class="text-red-500">*</span>
                             </label>
-                            <input type="number" name="position_x" x-model.number="position_x"
-                                min="0" max="1800" required
+                            <input type="number" name="position_x" x-model.number="position_x" min="0"
+                                max="1800" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                             <p class="text-xs text-gray-500 mt-1">Atau drag gedung di preview</p>
                         </div>
@@ -135,8 +135,8 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Posisi Y <span class="text-red-500">*</span>
                             </label>
-                            <input type="number" name="position_y" x-model.number="position_y"
-                                min="0" max="1200" required
+                            <input type="number" name="position_y" x-model.number="position_y" min="0"
+                                max="1200" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
                             <p class="text-xs text-gray-500 mt-1">Atau drag gedung di preview</p>
                         </div>
@@ -174,43 +174,45 @@
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-lg font-semibold text-gray-900">Live Preview</h2>
                             <span class="text-xs px-3 py-1 bg-teal-100 text-teal-700 rounded-full font-medium">
-                                Klik dan Drag untuk memindahkan
+                                Drag untuk memindahkan
                             </span>
                         </div>
 
                         <div class="bg-gray-50 rounded-lg border-2 border-gray-300 p-4 relative" style="height: 400px;">
                             <svg id="previewSvg" viewBox="0 0 1800 1200" class="w-full h-full"
-                                @mousedown="startDrag($event)"
-                                @mousemove="drag($event)"
-                                @mouseup="stopDrag()"
-                                @mouseleave="stopDrag()"
-                                style="cursor: grab;">
-                                <!-- Grid Background -->
+                                @mousedown="startDrag($event)" @mousemove="drag($event)" @mouseup="stopDrag()"
+                                @mouseleave="stopDrag()" style="cursor: grab;">
                                 <defs>
+                                    <!-- Grid Pattern -->
                                     <pattern id="previewGrid" width="50" height="50"
                                         patternUnits="userSpaceOnUse">
                                         <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#e5e7eb" stroke-width="1" />
                                     </pattern>
                                 </defs>
-                                <rect width="100%" height="100%" fill="url(#previewGrid)" />
+
+                                <!-- Background Image -->
+                                <image href="{{ asset('images/background-map.png') }}" x="0" y="0" width="1800"
+                                    height="1200" preserveAspectRatio="xMidYMid slice" opacity="0.5" />
 
                                 <!-- Existing Buildings -->
                                 @foreach ($existingBuildings as $existingBuilding)
-                                    <g opacity="0.4">
+                                    <g opacity="0.5">
                                         @if ($existingBuilding->rotation > 0)
                                             <g
                                                 transform="rotate({{ $existingBuilding->rotation }} {{ $existingBuilding->position_x + $existingBuilding->width / 2 }} {{ $existingBuilding->position_y + $existingBuilding->height / 2 }})">
-                                                <path d="{{ $existingBuilding->generateSvgPath() }}" fill="#e0e7eb"
-                                                    stroke="#9ca3af" stroke-width="2" stroke-dasharray="8,4" />
+                                                <path d="{{ $existingBuilding->generateSvgPath() }}"
+                                                    fill="{{ $existingBuilding->color }}" stroke="#000000"
+                                                    stroke-width="2" stroke-dasharray="8,4" />
                                             </g>
                                         @else
-                                            <path d="{{ $existingBuilding->generateSvgPath() }}" fill="#e0e7eb"
-                                                stroke="#9ca3af" stroke-width="2" stroke-dasharray="8,4" />
+                                            <path d="{{ $existingBuilding->generateSvgPath() }}"
+                                                fill="{{ $existingBuilding->color }}" stroke="#000000" stroke-width="2"
+                                                stroke-dasharray="8,4" />
                                         @endif
 
                                         <text x="{{ $existingBuilding->position_x + $existingBuilding->width / 2 }}"
                                             y="{{ $existingBuilding->position_y + $existingBuilding->height / 2 }}"
-                                            text-anchor="middle" class="text-xs" fill="#6b7280" opacity="0.7"
+                                            text-anchor="middle" class="text-xs" fill="#000000" opacity="0.7"
                                             style="pointer-events: none;">
                                             {{ $existingBuilding->name }}
                                         </text>
@@ -230,10 +232,10 @@
                                             opacity="0.3" />
                                     </g>
 
-                                    <!-- Label (tidak ikut rotate) -->
+                                    <!-- Label -->
                                     <text id="buildingLabel" :x="position_x + width / 2" :y="position_y + height / 2"
-                                        text-anchor="middle" class="text-sm font-bold" fill="#0f766e"
-                                        style="pointer-events: none;"
+                                        text-anchor="middle" class="text-sm font-bold" fill="#0f766e" stroke="white"
+                                        stroke-width="3" paint-order="stroke" style="pointer-events: none;"
                                         x-text="name || 'Gedung Baru'">
                                     </text>
                                 </g>
@@ -262,11 +264,19 @@
                             <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                                 <p class="text-xs text-blue-800">
                                     <strong>Position:</strong><br>
-                                    X: <span x-text="position_x"></span> px, 
+                                    X: <span x-text="position_x"></span> px,
                                     Y: <span x-text="position_y"></span> px<br>
                                     <strong>Rotation:</strong>
                                     <span
                                         x-text="rotation + '° - ' + (rotation === 0 ? 'Normal' : rotation === 90 ? 'Ke Kanan' : rotation === 180 ? 'Terbalik' : 'Ke Kiri')"></span>
+                                </p>
+                            </div>
+
+                            <!-- Tips -->
+                            <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                                <p class="text-xs text-amber-800">
+                                    <strong>Tips:</strong> Drag gedung baru (hijau) di atas background map untuk positioning
+                                    yang akurat!
                                 </p>
                             </div>
                         </div>
@@ -290,7 +300,7 @@
                 color: '#5eead4',
                 rotation: 0,
                 previewPath: '',
-                
+
                 // Drag state
                 isDragging: false,
                 dragOffsetX: 0,
@@ -333,19 +343,23 @@
                 startDrag(event) {
                     const svg = document.getElementById('previewSvg');
                     const rect = svg.getBoundingClientRect();
-                    
-                    // Convert mouse position to SVG coordinates
-                    const svgX = ((event.clientX - rect.left) / rect.width) * 1800;
-                    const svgY = ((event.clientY - rect.top) / rect.height) * 1200;
-                    
+
+                    const pt = svg.createSVGPoint();
+                    pt.x = event.clientX;
+                    pt.y = event.clientY;
+
+                    const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+                    const svgX = svgP.x;
+                    const svgY = svgP.y;
+
                     // Check if click is inside building bounds
                     if (svgX >= this.position_x && svgX <= this.position_x + this.width &&
                         svgY >= this.position_y && svgY <= this.position_y + this.height) {
-                        
+
                         this.isDragging = true;
                         this.dragOffsetX = svgX - this.position_x;
                         this.dragOffsetY = svgY - this.position_y;
-                        
+
                         event.preventDefault();
                     }
                 },
@@ -355,23 +369,28 @@
 
                     const svg = document.getElementById('previewSvg');
                     const rect = svg.getBoundingClientRect();
-                    
-                    // Convert mouse position to SVG coordinates
-                    let svgX = ((event.clientX - rect.left) / rect.width) * 1800;
-                    let svgY = ((event.clientY - rect.top) / rect.height) * 1200;
-                    
+
+                    // Gunakan method bawaan SVG untuk konversi yang akurat
+                    const pt = svg.createSVGPoint();
+                    pt.x = event.clientX;
+                    pt.y = event.clientY;
+
+                    const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+                    let svgX = svgP.x;
+                    let svgY = svgP.y;
+
                     // Calculate new position with offset
                     let newX = svgX - this.dragOffsetX;
                     let newY = svgY - this.dragOffsetY;
-                    
+
                     // Constrain to canvas bounds
                     newX = Math.max(0, Math.min(newX, 1800 - this.width));
                     newY = Math.max(0, Math.min(newY, 1200 - this.height));
-                    
+
                     // Round to nearest integer for cleaner values
                     this.position_x = Math.round(newX);
                     this.position_y = Math.round(newY);
-                    
+
                     this.updatePreview();
                 },
 

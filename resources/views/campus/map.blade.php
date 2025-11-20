@@ -32,13 +32,16 @@
                 <div class="lg:col-span-3 p-6 bg-gray-50">
                     <div class="bg-white rounded-lg border-2 border-gray-300 overflow-hidden" style="height: 600px;">
                         <svg id="campusMap" viewBox="0 0 1800 1200" class="w-full h-full">
-                            <!-- Grid Background -->
                             <defs>
+                                <!-- Grid Pattern -->
                                 <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
                                     <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#e5e7eb" stroke-width="1" />
                                 </pattern>
                             </defs>
-                            <rect width="100%" height="100%" fill="url(#grid)" />
+
+                            <!-- Background Image -->
+                            <image href="{{ asset('images/background-map.png') }}" x="0" y="0" width="1800" height="1200"
+                                preserveAspectRatio="xMidYMid slice" />
 
                             <!-- Buildings -->
                             @foreach ($buildings as $building)
@@ -60,45 +63,40 @@
 
                                     $centerX = $building->position_x + $building->width / 2;
                                     $centerY = $building->position_y + $building->height / 2;
-
-                                    // Calculate text background size (estimate)
-                                    $textLength = max(strlen($line1), strlen($line2));
-                                    $bgWidth = $textLength * 8 + 20; // Approximate width
-                                    $bgHeight = $line2 ? 40 : 24; // Height based on lines
                                 @endphp
 
                                 <g class="building-group cursor-pointer" data-building-id="{{ $building->id }}"
-                                    onclick="showBuildingModal({{ $building->id }})">
+                                    data-color="{{ $building->color }}" onclick="showBuildingModal({{ $building->id }})">
 
                                     <!-- Building Shape with Rotation -->
                                     <g
                                         @if ($building->rotation > 0) transform="rotate({{ $building->rotation }} {{ $centerX }} {{ $centerY }})" @endif>
                                         <path d="{{ $building->generateSvgPath() }}" fill="{{ $building->color }}"
-                                            stroke="#14b8a6" stroke-width="2"
-                                            class="building-path transition-all duration-200 hover:fill-teal-400 hover:stroke-teal-600" />
+                                            stroke="#000000" stroke-width="2"
+                                            class="building-path transition-all duration-200" />
                                     </g>
 
-                                    <!-- Text Label with Stroke (Multi-line support) -->
+                                    <!-- Text Label with Black Stroke (Multi-line support) -->
                                     <text text-anchor="middle" font-size="16" font-weight="bold"
                                         class="pointer-events-none select-none">
 
                                         @if ($line2)
                                             <!-- Line 1 (top) -->
                                             <tspan x="{{ $centerX }}" y="{{ $centerY - 8 }}" stroke="white"
-                                                stroke-width="4" paint-order="stroke" fill="#0f766e">
+                                                stroke-width="4" paint-order="stroke" fill="#000000">
                                                 {{ $line1 }}
                                             </tspan>
 
                                             <!-- Line 2 (bottom) -->
                                             <tspan x="{{ $centerX }}" y="{{ $centerY + 12 }}" stroke="white"
-                                                stroke-width="4" paint-order="stroke" fill="#0f766e">
+                                                stroke-width="4" paint-order="stroke" fill="#000000">
                                                 {{ $line2 }}
                                             </tspan>
                                         @else
                                             <!-- Single Line -->
                                             <tspan x="{{ $centerX }}" y="{{ $centerY }}"
                                                 dominant-baseline="middle" stroke="white" stroke-width="4"
-                                                paint-order="stroke" fill="#0f766e">
+                                                paint-order="stroke" fill="#000000">
                                                 {{ $line1 }}
                                             </tspan>
                                         @endif
@@ -117,17 +115,6 @@
                 <!-- Info Panel -->
                 <div class="p-6 bg-gray-50 border-l border-gray-200">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Informasi Denah</h3>
-
-                    <!-- Legend -->
-                    <div class="mb-6">
-                        <h4 class="text-sm font-medium text-gray-700 mb-3">Legend:</h4>
-                        <div class="space-y-2 text-sm">
-                            <div class="flex items-center">
-                                <div class="w-4 h-4 bg-teal-400 border-2 border-teal-600 rounded mr-2"></div>
-                                <span class="text-gray-700">Gedung Kampus</span>
-                            </div>
-                        </div>
-                    </div>
 
                     <!-- Access Point Status -->
                     <div class="mb-6">
@@ -178,8 +165,7 @@
                     <h3 class="text-xl font-bold text-gray-900" id="modalTitle"></h3>
                     <button onclick="closeBuildingModal()" class="text-gray-400 hover:text-gray-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                             </path>
                         </svg>
                     </button>
@@ -206,11 +192,33 @@
     <script>
         const buildings = @json($buildings);
 
+        // Helper function to darken a hex color
+        function darkenColor(hex, percent = 20) {
+            // Remove # if present
+            hex = hex.replace('#', '');
+
+            // Convert to RGB
+            let r = parseInt(hex.substring(0, 2), 16);
+            let g = parseInt(hex.substring(2, 4), 16);
+            let b = parseInt(hex.substring(4, 6), 16);
+
+            // Darken by reducing each component
+            r = Math.floor(r * (1 - percent / 100));
+            g = Math.floor(g * (1 - percent / 100));
+            b = Math.floor(b * (1 - percent / 100));
+
+            // Convert back to hex
+            const toHex = (c) => {
+                const hex = c.toString(16);
+                return hex.length === 1 ? '0' + hex : hex;
+            };
+
+            return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+        }
+
         function showBuildingModal(buildingId) {
             const building = buildings.find(b => b.id === buildingId);
             if (!building) return;
-
-            console.log('Building clicked:', building); // Debug
 
             // Update modal content
             document.getElementById('modalTitle').textContent = building.name;
@@ -256,12 +264,16 @@
             }
         });
 
-        // Add hover effect
+        // Add dynamic hover effect based on building color
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.building-group').forEach(group => {
+                const originalColor = group.dataset.color;
+                const darkerColor = darkenColor(originalColor, 20); // 20% darker
+
                 group.addEventListener('mouseenter', function() {
                     const path = this.querySelector('.building-path');
                     if (path) {
+                        path.style.fill = darkerColor;
                         path.style.transform = 'scale(1.02)';
                         path.style.transformOrigin = 'center';
                     }
@@ -270,6 +282,7 @@
                 group.addEventListener('mouseleave', function() {
                     const path = this.querySelector('.building-path');
                     if (path) {
+                        path.style.fill = originalColor;
                         path.style.transform = 'scale(1)';
                     }
                 });
