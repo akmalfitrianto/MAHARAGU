@@ -50,6 +50,12 @@ class User extends Authenticatable
         return $this->hasMany(Notification::class);
     }
 
+    public function buildings()
+    {
+        return $this->belongsToMany(Building::class, 'building_user')
+                    ->withTimestamps();
+    }
+
     // helper methods
     public function isSuperAdmin(): bool
     {
@@ -59,6 +65,24 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    public function hasAccessToBuilding($buildingId): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        return $this->buildings()->where('building_id', $buildingId)->exists();
+    }
+
+    public function accessibleBuilding()
+    {
+        if ($this->isSuperAdmin()){
+            return Building::all();
+        }
+
+        return $this->buildings;
     }
 
     public function unreadNotifications()

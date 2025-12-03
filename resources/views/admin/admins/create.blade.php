@@ -13,9 +13,7 @@
                 </li>
                 <li>
                     <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                            clip-rule="evenodd"></path>
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                     </svg>
                 </li>
                 <li>
@@ -79,6 +77,36 @@
                     @error('unit_kerja')
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                     @enderror
+                </div>
+
+                <!-- Akses Gedung -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Gedung yang Dapat Diakses <span class="text-red-500">*</span>
+                    </label>
+                    <div class="border border-gray-300 rounded-lg p-4 max-h-64 overflow-y-auto">
+                        @if($buildings->isEmpty())
+                            <p class="text-sm text-gray-500">Belum ada gedung tersedia</p>
+                        @else
+                            <div class="space-y-2">
+                                @foreach($buildings as $building)
+                                    <label class="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer">
+                                        <input 
+                                            type="checkbox" 
+                                            name="buildings[]" 
+                                            value="{{ $building->id }}"
+                                            {{ in_array($building->id, old('buildings', [])) ? 'checked' : '' }}
+                                            class="w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
+                                        >
+                                        <span class="ml-3 text-sm text-gray-900">{{ $building->name }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">
+                        Pilih gedung yang bisa diakses oleh admin ini. Jika tidak ada yang dipilih, admin tidak bisa membuat ticket.
+                    </p>
                 </div>
 
                 <!-- Password -->

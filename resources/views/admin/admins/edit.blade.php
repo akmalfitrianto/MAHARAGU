@@ -80,6 +80,36 @@
                     @enderror
                 </div>
 
+                <!-- Akses Gedung -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Gedung yang Dapat Diakses <span class="text-red-500">*</span>
+                    </label>
+                    <div class="border border-gray-300 rounded-lg p-4 max-h-64 overflow-y-auto">
+                        @if($buildings->isEmpty())
+                            <p class="text-sm text-gray-500">Belum ada gedung tersedia</p>
+                        @else
+                            <div class="space-y-2">
+                                @foreach($buildings as $building)
+                                    <label class="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer">
+                                        <input 
+                                            type="checkbox" 
+                                            name="buildings[]" 
+                                            value="{{ $building->id }}"
+                                            {{ in_array($building->id, old('buildings', $admin->buildings->pluck('id')->toArray())) ? 'checked' : '' }}
+                                            class="w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
+                                        >
+                                        <span class="ml-3 text-sm text-gray-900">{{ $building->name }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">
+                        Pilih gedung yang bisa diakses oleh admin ini.
+                    </p>
+                </div>
+
                 <!-- Password -->
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-2">

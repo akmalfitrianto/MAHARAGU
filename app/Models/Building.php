@@ -40,6 +40,13 @@ class Building extends Model
         return $this->hasManyThrough(Room::class, Floor::class);
     }
 
+    public function admins()
+    {
+        return $this->belongsToMany(User::class, 'building_user')
+                    ->where('role', 'admin')
+                    ->withTimestamps();
+    }
+
     public function getTotalRoomsAttribute(): int
     {
         return $this->rooms()->count();

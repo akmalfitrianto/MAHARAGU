@@ -42,6 +42,12 @@ class TicketController extends Controller
     {
         $accessPoint->load('room.floor.building');
 
+        $building = $accessPoint->room->floor->building;
+
+        if (!auth()->user()->hasAccessToBuilding($building->id)) {
+            abort(403, 'Anda tidak memiliki akses untuk membuat tiket di gedung ini.');
+        }
+
         return view('tickets.create', compact('accessPoint'));
     }
 
@@ -53,7 +59,15 @@ class TicketController extends Controller
             'description' => 'required|string',
         ]);
 
-        $accessPoint = AccessPoint::findOrFail($request->access_point_id);
+        $accessPoint = AccessPoint::with('room.floor.building')->findOrFail($request->access_point_id);
+
+        $building = $accessPoint->room->floor->building;
+
+        if (!auth()->user()->hasAccessToBuilding($building->id)) {
+            return redirect()->back()
+                ->withErrors(['access_point_id' => 'Anda tidak memiliki akses untuk membuat tiket digedung ini.'])
+                ->withInput();
+        }
 
         if ($accessPoint->status === 'maintenance') {
             return redirect()->back()
