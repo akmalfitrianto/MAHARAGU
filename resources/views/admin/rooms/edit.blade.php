@@ -169,10 +169,10 @@
                                 <span class="font-medium">Access Points:</span> {{ $room->total_access_points }}
                             </div>
                             <div>
-                                <span class="font-medium">AP Aktif:</span> {{ $room->active_access_points }}
+                                <span class="font-medium">AP Normal:</span> {{ $room->active_access_points }}
                             </div>
                             <div>
-                                <span class="font-medium">AP Offline:</span> {{ $room->offline_access_points }}
+                                <span class="font-medium">AP Bermasalah:</span> {{ $room->offline_access_points }}
                             </div>
                             <div>
                                 <span class="font-medium">Maintenance:</span> {{ $room->maintenance_access_points }}
@@ -271,10 +271,10 @@
                                         <span class="font-medium">Access Points:</span> {{ $room->total_access_points }}
                                     </div>
                                     <div>
-                                        <span class="font-medium">AP Aktif:</span> {{ $room->active_access_points }}
+                                        <span class="font-medium">AP Normal:</span> {{ $room->active_access_points }}
                                     </div>
                                     <div>
-                                        <span class="font-medium">AP Offline:</span> {{ $room->offline_access_points }}
+                                        <span class="font-medium">AP Bermasalah:</span> {{ $room->offline_access_points }}
                                     </div>
                                     <div>
                                         <span class="font-medium">Maintenance:</span>

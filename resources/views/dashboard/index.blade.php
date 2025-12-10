@@ -26,7 +26,7 @@
         <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-600 font-medium">AP Aktif</p>
+                    <p class="text-sm text-gray-600 font-medium">AP Normal</p>
                     <p class="text-3xl font-bold text-green-600 mt-2">{{ $stats['active_aps'] }}</p>
                 </div>
                 <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -41,7 +41,7 @@
         <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-600 font-medium">AP Offline</p>
+                    <p class="text-sm text-gray-600 font-medium">AP Bermasalah</p>
                     <p class="text-3xl font-bold text-red-600 mt-2">{{ $stats['offline_aps'] }}</p>
                 </div>
                 <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">

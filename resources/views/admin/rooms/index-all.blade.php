@@ -32,11 +32,11 @@
                 <p class="text-xl font-bold">{{ $rooms->sum('total_access_points') }}</p>
             </div>
             <div>
-                <p class="text-blue-100">AP Aktif</p>
+                <p class="text-blue-100">AP Normal</p>
                 <p class="text-xl font-bold text-green-300">{{ $rooms->sum('active_access_points') }}</p>
             </div>
             <div>
-                <p class="text-blue-100">AP Offline</p>
+                <p class="text-blue-100">AP Bermasalah</p>
                 <p class="text-xl font-bold text-red-300">{{ $rooms->sum('offline_access_points') }}</p>
             </div>
         </div>

@@ -123,14 +123,14 @@
                             <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
                                 <div class="flex items-center">
                                     <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                                    <span class="text-sm text-gray-700">Aktif</span>
+                                    <span class="text-sm text-gray-700">Normal</span>
                                 </div>
                                 <span class="text-sm font-bold text-green-600">{{ $campusStats['active_aps'] }}</span>
                             </div>
                             <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
                                 <div class="flex items-center">
                                     <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-                                    <span class="text-sm text-gray-700">Offline</span>
+                                    <span class="text-sm text-gray-700">Bermasalah</span>
                                 </div>
                                 <span class="text-sm font-bold text-red-600">{{ $campusStats['offline_aps'] }}</span>
                             </div>
@@ -236,8 +236,8 @@
                 <p class="text-sm text-gray-600 mb-2">Total Access Points</p>
                 <p class="text-2xl font-bold text-gray-900">${building.total_access_points} AP</p>
                 <div class="mt-2 flex items-center space-x-4 text-sm">
-                    <span class="text-green-600">● ${building.active_access_points} Aktif</span>
-                    <span class="text-red-600">● ${building.offline_access_points} Offline</span>
+                    <span class="text-green-600">● ${building.active_access_points} Normal</span>
+                    <span class="text-red-600">● ${building.offline_access_points} Bermasalah</span>
                     <span class="text-yellow-600">● ${building.maintenance_access_points} Maintenance</span>
                 </div>
             </div>

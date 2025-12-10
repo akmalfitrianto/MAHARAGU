@@ -61,11 +61,11 @@
                     <p class="text-xl font-bold">{{ $floor->total_access_points }}</p>
                 </div>
                 <div>
-                    <p class="text-blue-100">AP Aktif</p>
+                    <p class="text-blue-100">AP Normal</p>
                     <p class="text-xl font-bold text-green-300">{{ $floor->active_access_points }}</p>
                 </div>
                 <div>
-                    <p class="text-blue-100">AP Offline</p>
+                    <p class="text-blue-100">AP Bermasalah</p>
                     <p class="text-xl font-bold text-red-300">{{ $floor->offline_access_points }}</p>
                 </div>
             </div>

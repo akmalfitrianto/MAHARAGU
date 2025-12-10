@@ -149,9 +149,9 @@
                             @change="updatePreview()"
                             required
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500">
-                        <option value="active">Active (Aktif)</option>
-                        <option value="offline">Offline (Mati)</option>
-                        <option value="maintenance">Maintenance (Pemeliharaan)</option>
+                        <option value="active">Normal</option>
+                        <option value="offline">Bermasalah</option>
+                        <option value="maintenance">Maintenance</option>
                     </select>
                 </div>
 
@@ -444,7 +444,7 @@
                                    'text-red-900': status === 'offline',
                                    'text-yellow-900': status === 'maintenance'
                                }"
-                               x-text="status === 'active' ? 'Active (Aktif)' : status === 'offline' ? 'Offline (Mati)' : 'Maintenance'">
+                               x-text="status === 'active' ? 'Normal' : status === 'offline' ? 'Bermasalah' : 'Maintenance'">
                             </p>
                         </div>
                     </div>
