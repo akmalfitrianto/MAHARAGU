@@ -126,7 +126,7 @@
                         <div class="space-y-2">
                             <div class="flex items-center">
                                 <div class="w-4 h-4 bg-green-500 rounded-full mr-2 border-2 border-white"></div>
-                                <span class="text-sm text-gray-700">Active</span>
+                                <span class="text-sm text-gray-700">Normal</span>
                             </div>
                             <div class="flex items-center">
                                 <div class="w-4 h-4 bg-yellow-500 rounded-full mr-2 border-2 border-white"></div>
@@ -134,7 +134,7 @@
                             </div>
                             <div class="flex items-center">
                                 <div class="w-4 h-4 bg-red-500 rounded-full mr-2 border-2 border-white"></div>
-                                <span class="text-sm text-gray-700">Offline</span>
+                                <span class="text-sm text-gray-700">Bermasalah</span>
                             </div>
                         </div>
                     </div>
