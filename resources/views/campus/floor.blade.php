@@ -2,6 +2,7 @@
 
 @section('title', 'Lantai ' . $floor->floor_number . ' - ' . $building->name)
 @section('header', $building->name)
+@section('subheader', 'Visualisasi denah ruangan dan access point')
 
 @section('content')
     <div class="flex flex-col lg:flex-row h-[calc(100vh-theme(spacing.32))] bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200 relative"
