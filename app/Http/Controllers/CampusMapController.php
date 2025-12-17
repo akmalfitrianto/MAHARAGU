@@ -38,9 +38,16 @@ class CampusMapController extends Controller
 
     public function show(Building $building)
     {
-        $building->load(['floors.rooms.accessPoints']);
+        $firstFloor = $building->floors()->orderBy('floor_number', 'asc')->first();
 
-        return view('campus.building', compact('building'));
+        if ($firstFloor) {
+            return redirect()->route('building.floor', [
+                'building' => $building->id, 
+                'floor' => $firstFloor->id
+            ]);
+        }
+
+        return back()->with('error', 'Denah lantai belum tersedia untuk gedung ini.');
     }
 
     public function floor(Building $building, Floor $floor)
