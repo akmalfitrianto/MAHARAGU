@@ -27,7 +27,7 @@
                     <img src="/images/logo.png" alt="UIN Logo"
                         class="w-20 h-20 mx-auto mb-4 object-contain drop-shadow-md">
                     <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Selamat Datang</h1>
-                    <p class="text-gray-500 mt-2 text-sm">Masuk untuk mengakses UIN Ticketing System</p>
+                    <p class="text-gray-500 mt-2 text-sm">Masuk untuk mengakses Monitoring & Tracking Access Point</p>
                 </div>
 
                 @if ($errors->any())

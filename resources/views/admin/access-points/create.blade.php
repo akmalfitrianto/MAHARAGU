@@ -300,7 +300,7 @@
                                     X: <span x-text="position_x"></span> px,
                                     Y: <span x-text="position_y"></span> px<br>
                                     <strong>Status:</strong>
-                                    <span x-text="status === 'active' ? 'Active' : status === 'offline' ? 'Offline' : 'Maintenance'"></span>
+                                    <span x-text="status === 'active' ? 'Normal' : status === 'offline' ? 'Bermasalah' : 'Maintenance'"></span>
                                 </p>
                             </div>
 
@@ -310,11 +310,11 @@
                                 <div class="grid grid-cols-3 gap-2 text-xs">
                                     <div class="flex items-center">
                                         <span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span>
-                                        <span class="text-gray-600">Active</span>
+                                        <span class="text-gray-600">Normal</span>
                                     </div>
                                     <div class="flex items-center">
                                         <span class="w-3 h-3 rounded-full bg-red-500 mr-2"></span>
-                                        <span class="text-gray-600">Offline</span>
+                                        <span class="text-gray-600">Bermasalah</span>
                                     </div>
                                     <div class="flex items-center">
                                         <span class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></span>
