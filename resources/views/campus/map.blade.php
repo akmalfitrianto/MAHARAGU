@@ -90,7 +90,7 @@
 
                         @foreach ($buildings as $building)
                             @php
-                                // Logic Split Nama (Original)
+                                // LOGIKA TEXT WRAPPING
                                 $nameWords = explode(' ', $building->name);
                                 $totalWords = count($nameWords);
                                 if ($totalWords > 2) {
@@ -112,11 +112,11 @@
                                     @if ($building->rotation > 0) transform="rotate({{ $building->rotation }} {{ $centerX }} {{ $centerY }})" @endif>
                                     <path d="{{ $building->generateSvgPath() }}" fill="{{ $building->color }}"
                                         stroke="#000000" stroke-width="2"
-                                        class="building-path transition-all duration-200" />
+                                        class="building-path transition-all duration-200 shadow-md" />
                                 </g>
 
                                 <text text-anchor="middle" font-size="16" font-weight="bold"
-                                    class="pointer-events-none select-none">
+                                    class="pointer-events-none select-none drop-shadow-md">
                                     @if ($line2)
                                         <tspan x="{{ $centerX }}" y="{{ $centerY - 8 }}" stroke="white"
                                             stroke-width="4" paint-order="stroke" fill="#000000">{{ $line1 }}
@@ -147,8 +147,8 @@
 
                 <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                     <div>
-                        <h3 class="font-bold text-gray-800">Status Jaringan</h3>
-                        <p class="text-xs text-gray-500 mt-1">Real-time monitoring</p>
+                        <h3 class="font-bold text-gray-800">Pantauan Kritis</h3>
+                        <p class="text-xs text-gray-500 mt-1">Gedung yang butuh perhatian</p>
                     </div>
                     <button @click="showInfoPanel = false" class="lg:hidden text-gray-400 hover:text-gray-600">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,50 +158,86 @@
                     </button>
                 </div>
 
-                <div class="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between p-3 rounded-xl bg-green-50 border border-green-100">
-                            <div class="flex items-center space-x-3">
-                                <span class="relative flex h-3 w-3">
-                                    <span
-                                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                                </span>
-                                <span class="text-sm font-medium text-gray-700">Normal</span>
-                            </div>
-                            <span class="font-bold text-green-600">{{ $campusStats['active_aps'] }}</span>
-                        </div>
-                        <div class="flex items-center justify-between p-3 rounded-xl bg-red-50 border border-red-100">
-                            <div class="flex items-center space-x-3">
-                                <span class="h-3 w-3 rounded-full bg-red-500"></span>
-                                <span class="text-sm font-medium text-gray-700">Bermasalah</span>
-                            </div>
-                            <span class="font-bold text-red-600">{{ $campusStats['offline_aps'] }}</span>
-                        </div>
-                        <div
-                            class="flex items-center justify-between p-3 rounded-xl bg-yellow-50 border border-yellow-100">
-                            <div class="flex items-center space-x-3">
-                                <span class="h-3 w-3 rounded-full bg-yellow-500"></span>
-                                <span class="text-sm font-medium text-gray-700">Maintenance</span>
-                            </div>
-                            <span class="font-bold text-yellow-600">{{ $campusStats['maintenance_aps'] }}</span>
-                        </div>
-                    </div>
+                <div class="p-4 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
 
-                    <div class="mt-6 pt-6 border-t border-gray-100">
-                        <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Petunjuk</h4>
-                        <ul class="text-sm text-gray-600 space-y-3">
-                            <li class="flex items-start space-x-2">
-                                <svg class="w-5 h-5 text-teal-500 mt-0.5" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
+                    @php
+                        // Filter gedung yang bermasalah (Offline > 0 atau Maintenance > 0)
+                        $problemBuildings = $buildings->filter(function ($b) {
+                            return $b->offline_access_points > 0 || $b->maintenance_access_points > 0;
+                        });
+                    @endphp
+
+                    @if ($problemBuildings->count() > 0)
+                        <div class="space-y-3">
+                            @foreach ($problemBuildings as $problemBuilding)
+                                <div onclick="showBuildingModal({{ $problemBuilding->id }})"
+                                    class="group flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all hover:shadow-md
+                                     {{ $problemBuilding->offline_access_points > 0 ? 'bg-red-50 border-red-100 hover:border-red-300' : 'bg-yellow-50 border-yellow-100 hover:border-yellow-300' }}">
+
+                                    <div class="flex items-center space-x-3">
+                                        <div class="shrink-0">
+                                            @if ($problemBuilding->offline_access_points > 0)
+                                                <span
+                                                    class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-100 text-red-600">
+                                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                                        stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                    </svg>
+                                                </span>
+                                            @else
+                                                <span
+                                                    class="flex h-8 w-8 items-center justify-center rounded-lg bg-yellow-100 text-yellow-600">
+                                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                                        stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    </svg>
+                                                </span>
+                                            @endif
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm font-bold text-gray-900 group-hover:underline">
+                                                {{ $problemBuilding->name }}</h4>
+                                            <p class="text-xs text-gray-500">
+                                                @if ($problemBuilding->offline_access_points > 0)
+                                                    <span
+                                                        class="text-red-600 font-bold">{{ $problemBuilding->offline_access_points }}
+                                                        AP Offline</span>
+                                                @else
+                                                    <span
+                                                        class="text-yellow-600 font-bold">{{ $problemBuilding->maintenance_access_points }}
+                                                        AP Maintenance</span>
+                                                @endif
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <svg class="h-4 w-4 text-gray-400 group-hover:text-gray-600" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div
+                            class="flex flex-col items-center justify-center h-40 text-center p-4 border-2 border-dashed border-gray-100 rounded-2xl">
+                            <div
+                                class="h-12 w-12 bg-green-50 text-green-500 rounded-full flex items-center justify-center mb-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122">
-                                    </path>
+                                        d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                <span>Klik pada gedung untuk melihat detail.</span>
-                            </li>
-                        </ul>
-                    </div>
+                            </div>
+                            <h4 class="text-sm font-bold text-gray-900">Semua Sistem Normal</h4>
+                            <p class="text-xs text-gray-500 mt-1">Tidak ada gedung yang mengalami gangguan saat ini.</p>
+                        </div>
+                    @endif
                 </div>
 
                 <div class="p-4 bg-gray-50 border-t border-gray-100 text-center">
@@ -251,9 +287,10 @@
     <script>
         const buildings = @json($buildings);
 
-        // Function Helper Original
+        // Helper untuk menggelapkan warna saat hover
         function darkenColor(hex, percent = 20) {
             hex = hex.replace('#', '');
+            if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
             let r = parseInt(hex.substring(0, 2), 16);
             let g = parseInt(hex.substring(2, 4), 16);
             let b = parseInt(hex.substring(4, 6), 16);
@@ -267,6 +304,7 @@
             return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
         }
 
+        // Modal Logic
         function showBuildingModal(buildingId) {
             const building = buildings.find(b => b.id === buildingId);
             if (!building) return;
@@ -338,7 +376,7 @@
             }
         });
 
-        // Hover Effect Original (Sedikit diperhalus dengan JS)
+        // Hover Effect Logic
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.building-group').forEach(group => {
                 const originalColor = group.dataset.color;

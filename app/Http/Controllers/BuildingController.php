@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\Floor;
 use Illuminate\Http\Request;
@@ -10,12 +11,7 @@ class BuildingController extends Controller
 {
     public function index()
     {
-        $buildings = Building::withCount(['floors', 'rooms'])->get();
-
-        // Calculate AP stats for each building
-        foreach ($buildings as $building) {
-            $building->load('floors.rooms.accessPoints');
-        }
+        $buildings = Building::with(['floors.rooms.accessPoints'])->get();
 
         return view('admin.buildings.index', compact('buildings'));
     }
@@ -23,7 +19,6 @@ class BuildingController extends Controller
     public function create()
     {
         $existingBuildings = Building::all();
-
         return view('admin.buildings.create', [
             'existingBuildings' => $existingBuildings
         ]);
@@ -31,6 +26,7 @@ class BuildingController extends Controller
 
     public function store(Request $request)
     {
+        // Validasi
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'total_floors' => 'required|integer|min:1|max:20',
@@ -40,14 +36,13 @@ class BuildingController extends Controller
             'height' => 'required|integer|min:0|max:1000',
             'position_x' => 'required|integer|min:0|max:1800',
             'position_y' => 'required|integer|min:0|max:1200',
+            'rotation' => 'nullable|integer',
             'color' => 'nullable|string',
         ]);
 
-        $validated['color'] = $validated['color'] ?? '#5eead4';
-
         $building = Building::create($validated);
 
-        // Create floors automatically
+        // Auto-create floors
         for ($i = 1; $i <= $building->total_floors; $i++) {
             Floor::create([
                 'building_id' => $building->id,
@@ -62,6 +57,7 @@ class BuildingController extends Controller
 
     public function show(Building $building)
     {
+        // Load data lengkap untuk detail gedung
         $building->load(['floors.rooms.accessPoints']);
         return view('admin.buildings.show', compact('building'));
     }
@@ -69,7 +65,6 @@ class BuildingController extends Controller
     public function edit(Building $building)
     {
         $existingBuildings = Building::where('id', '!=', $building->id)->get();
-
         return view('admin.buildings.edit', [
             'building' => $building,
             'existingBuildings' => $existingBuildings
@@ -94,7 +89,7 @@ class BuildingController extends Controller
         $oldFloors = $building->total_floors;
         $building->update($validated);
 
-        // Adjust floors if needed
+        // Adjust floors logic
         if ($validated['total_floors'] > $oldFloors) {
             for ($i = $oldFloors + 1; $i <= $validated['total_floors']; $i++) {
                 Floor::create([
@@ -116,15 +111,15 @@ class BuildingController extends Controller
     public function destroy(Building $building)
     {
         $building->delete();
-
         return redirect()->route('admin.buildings.index')
             ->with('success', 'Gedung berhasil dihapus!');
     }
 
-    public function preview(Request $request, Building $building = null)
+    public function preview(Request $request)
     {
-        // For AJAX preview
         $data = $request->all();
+        // Paksa warna default untuk preview karena form tidak mengirim warna
+        $data['color'] = '#14b8a6'; 
 
         $tempBuilding = new Building($data);
         $path = $tempBuilding->generateSvgPath();
@@ -135,7 +130,7 @@ class BuildingController extends Controller
             'position_y' => $data['position_y'],
             'width' => $data['width'],
             'height' => $data['height'],
-            'color' => $data['color'] ?? '#5eead4',
+            'color' => $data['color'],
         ]);
     }
 

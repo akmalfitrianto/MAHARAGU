@@ -22,6 +22,7 @@ class Building extends Model
         'color',
     ];
 
+    // Atribut ini akan otomatis muncul (dihitung) setiap kali gedung diambil
     protected $appends = [
         'total_rooms',
         'total_access_points',
@@ -30,6 +31,8 @@ class Building extends Model
         'maintenance_access_points',
     ];
 
+    // --- RELATIONS ---
+
     public function floors()
     {
         return $this->hasMany(Floor::class);
@@ -37,56 +40,63 @@ class Building extends Model
 
     public function rooms()
     {
+        // Shortcut untuk mengambil semua room di gedung ini
         return $this->hasManyThrough(Room::class, Floor::class);
     }
 
     public function admins()
     {
         return $this->belongsToMany(User::class, 'building_user')
-                    ->where('role', 'admin')
-                    ->withTimestamps();
+            ->where('role', 'admin')
+            ->withTimestamps();
     }
+
+    // --- ACCESSORS (CALCULATED FIELDS) ---
+    // Best Practice: Hitung dari Collection yang sudah di-Eager Load di Controller
 
     public function getTotalRoomsAttribute(): int
     {
-        return $this->rooms()->count();
+        return $this->rooms->count();
     }
 
     public function getTotalAccessPointsAttribute(): int
     {
-        $total = 0;
-        foreach ($this->floors as $floor) {
-            $total += $floor->accessPoints()->count();
-        }
-        return $total;
+        // Loop: Floors -> Rooms -> AccessPoints (Collection)
+        return $this->floors->sum(function ($floor) {
+            return $floor->rooms->sum(function ($room) {
+                return $room->accessPoints->count();
+            });
+        });
     }
 
     public function getActiveAccessPointsAttribute(): int
     {
-        $total = 0;
-        foreach ($this->floors as $floor) {
-            $total += $floor->accessPoints()->where('status', 'active')->count();
-        }
-        return $total;
+        return $this->floors->sum(function ($floor) {
+            return $floor->rooms->sum(function ($room) {
+                return $room->accessPoints->where('status', 'active')->count();
+            });
+        });
     }
 
     public function getOfflineAccessPointsAttribute(): int
     {
-        $total = 0;
-        foreach ($this->floors as $floor) {
-            $total += $floor->accessPoints()->where('status', 'offline')->count();
-        }
-        return $total;
+        return $this->floors->sum(function ($floor) {
+            return $floor->rooms->sum(function ($room) {
+                return $room->accessPoints->where('status', 'offline')->count();
+            });
+        });
     }
 
     public function getMaintenanceAccessPointsAttribute(): int
     {
-        $total = 0;
-        foreach ($this->floors as $floor) {
-            $total += $floor->accessPoints()->where('status', 'maintenance')->count();
-        }
-        return $total;
+        return $this->floors->sum(function ($floor) {
+            return $floor->rooms->sum(function ($room) {
+                return $room->accessPoints->where('status', 'maintenance')->count();
+            });
+        });
     }
+
+    // --- SVG GENERATOR ---
 
     public function generateSvgPath(): string
     {
@@ -111,20 +121,20 @@ class Building extends Model
     {
         $legWidth = $w * 0.4;
         $legHeight = $h * 0.6;
-        
-        return "M {$x} {$y} L " . ($x + $w) . " {$y} L " . ($x + $w) . " " . ($y + $legHeight) . 
-               " L " . ($x + $legWidth) . " " . ($y + $legHeight) . 
-               " L " . ($x + $legWidth) . " " . ($y + $h) . 
-               " L {$x} " . ($y + $h) . " Z";
+
+        return "M {$x} {$y} L " . ($x + $w) . " {$y} L " . ($x + $w) . " " . ($y + $legHeight) .
+            " L " . ($x + $legWidth) . " " . ($y + $legHeight) .
+            " L " . ($x + $legWidth) . " " . ($y + $h) .
+            " L {$x} " . ($y + $h) . " Z";
     }
 
     private function generateUShape($x, $y, $w, $h): string
     {
-        return "M {$x} {$y} L " . ($x + $w) . " {$y} L " . ($x + $w) . " " . ($y + $h) . 
-               " L " . ($x + $w - ($w * 0.35)) . " " . ($y + $h) . 
-               " L " . ($x + $w - ($w * 0.35)) . " " . ($y + ($h * 0.5)) . 
-               " L " . ($x + ($w * 0.35)) . " " . ($y + ($h * 0.5)) . 
-               " L " . ($x + ($w * 0.35)) . " " . ($y + $h) . 
-               " L {$x} " . ($y + $h) . " Z";
+        return "M {$x} {$y} L " . ($x + $w) . " {$y} L " . ($x + $w) . " " . ($y + $h) .
+            " L " . ($x + $w - ($w * 0.35)) . " " . ($y + $h) .
+            " L " . ($x + $w - ($w * 0.35)) . " " . ($y + ($h * 0.5)) .
+            " L " . ($x + ($w * 0.35)) . " " . ($y + ($h * 0.5)) .
+            " L " . ($x + ($w * 0.35)) . " " . ($y + $h) .
+            " L {$x} " . ($y + $h) . " Z";
     }
 }
