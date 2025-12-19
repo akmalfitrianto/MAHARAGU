@@ -1,59 +1,132 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Monitoring dan Ticketing Access Point UIN Antasari Banjarmasin
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![Laravel](https://img.shields.io/badge/Laravel-12.x-red)
+![PHP](https://img.shields.io/badge/PHP-8.2-blue)
+![MySQL](https://img.shields.io/badge/Database-MySQL-orange)
+![Tailwind](https://img.shields.io/badge/Tailwind-3.x-38bdf8)
 
-## About Laravel
+**Sistem Monitoring dan Ticketing Access Point** adalah aplikasi berbasis web yang dirancang khusus untuk **UIN Antasari Banjarmasin**. Aplikasi ini berfungsi untuk memetakan, memantau, dan mengelola inventaris jaringan (Access Point) secara visual.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Aplikasi ini mengintegrasikan sistem pelaporan gangguan (*ticketing*) dengan visualisasi denah kampus interaktif, memudahkan tim IT dalam mendeteksi dan menangani lokasi gangguan jaringan.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+##  Fitur Unggulan
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+###  Visualisasi & Pemetaan (Interactive Map)
+* **Denah Kampus Visual:** Visualisasi lokasi gedung dalam format SVG yang interaktif.
+* **Status Warna Access-Points:** Gedung pada peta memiliki indikator warna berdasarkan kesehatan perangkat di dalamnya (Custom Color Identity dengan indikator status).
+* **Detail Lantai & Ruangan:** Drill-down dari gedung ke denah lantai untuk melihat posisi spesifik Access Point.
 
-## Learning Laravel
+###  Manajemen Tiket (Ticketing Flow)
+Sistem otomatis mengubah status perangkat berdasarkan siklus hidup tiket:
+1.  **Ticket Open**  Status AP otomatis menjadi **Bermasalah** (Merah).
+2.  **In Progress**  Status AP otomatis menjadi **Maintenance** (Kuning).
+3.  **Resolved/Closed**  Status AP kembali **Normal** (Hijau).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+###  Manajemen Data
+* CRUD Data Gedung, Lantai, dan Ruangan.
+* Manajemen Inventaris Access Point.
+* Role-Based Access Control (Superadmin & Admin).
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+##  Screenshots
 
-## Laravel Sponsors
+Berikut adalah tampilan visualisasi denah pada aplikasi:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+| Denah Kampus Utama | Denah Detail Lantai |
+|:---:|:---:|
+| ![Peta Kampus](public/images/halaman-peta.png) | ![Peta Lantai](public/images/peta-ruangan.png) |
+| *Visualisasi sebaran gedung UIN Antasari* | *Posisi Access Point pada ruangan* |
 
-### Premium Partners
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
 
-## Contributing
+##  Teknologi yang Digunakan
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+* **Backend:** Laravel 12 (PHP 8.2)
+* **Frontend:** Blade Templates, Tailwind CSS
+* **Interactivity:** Alpine.js (Untuk fitur Drag & Drop peta dan Modal)
+* **Database:** MySQL
+* **Icons:** Heroicons
 
-## Code of Conduct
+##  Cara Instalasi (Localhost)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Ikuti langkah-langkah berikut untuk menjalankan project di komputer lokal:
 
-## Security Vulnerabilities
+### Prasyarat
+* PHP >= 8.2
+* Composer
+* MySQL
+* Node.js & NPM
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Langkah-langkah
 
-## License
+1.  **Clone Repository**
+    ```bash
+    git clone [https://github.com/akmalfitrianto/ticketing-dan-monitoring-AccessPoint-UIN-Antasari-Banjarmasin](https://github.com/akmalfitrianto/ticketing-dan-monitoring-AccessPoint-UIN-Antasari-Banjarmasin)
+    cd nama-repo
+    ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+2.  **Install Dependencies**
+    ```bash
+    composer install
+    npm install
+    ```
+
+3.  **Konfigurasi Environment**
+    Duplikasi file `.env.example` menjadi `.env`:
+    ```bash
+    cp .env.example .env
+    ```
+    Buka file `.env` dan sesuaikan konfigurasi database Anda:
+    ```env
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=nama_database_anda
+    DB_USERNAME=root
+    DB_PASSWORD=
+    ```
+
+4.  **Generate App Key**
+    ```bash
+    php artisan key:generate
+    ```
+
+5.  **Migrasi & Seeding Database**
+    Jalankan perintah ini untuk membuat tabel dan mengisi akun default:
+    ```bash
+    php artisan migrate --seed
+    ```
+
+6.  **Jalankan Aplikasi**
+    Buka dua terminal terpisah untuk menjalankan server dan build assets:
+    
+    *Terminal 1:*
+    ```bash
+    php artisan serve
+    ```
+    
+    *Terminal 2:*
+    ```bash
+    npm run dev
+    ```
+
+7.  **Selesai!**
+    Buka browser dan akses `http://127.0.0.1:8000`.
+
+##  Akun Default
+
+Gunakan akun Superadmin berikut untuk login pertama kali:
+
+* **Email:** `superadmin@uin.ac.id`
+* **Password:** `password`
+
+##  Kontribusi & Pengembangan
+
+Aplikasi ini dikembangkan sebagai bagian dari PKL di UIN Antasari Banjarmasin.
+
+## Rencana Pengembangan Lanjutan Sistem
+
+Aplikasi ini akan dikembangkan lebih lanjut agar status Access Point bisa update secara real-time.
+
+##  Lisensi
+
+[MIT license](https://opensource.org/licenses/MIT).
