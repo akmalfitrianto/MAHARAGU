@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CampusMapController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\UnitKerjaController;
 use App\Http\Controllers\ReportController;  
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
@@ -112,6 +113,10 @@ Route::middleware('auth')->group(function () {
 
         // Admin Management
         Route::resource('admins', AdminController::class)->except(['show']);
+
+        // Unit Kerja Management
+        Route::resource('unit-kerja', UnitKerjaController::class)
+            ->parameters(['unit-kerja' => 'unitKerja']);
     });
 
     Route::get('/test-email', function () {

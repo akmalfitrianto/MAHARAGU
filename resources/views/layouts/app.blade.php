@@ -59,7 +59,8 @@
                     <img src="/images/logo.png" alt="UIN Antasari Logo" class="w-10 h-10 object-contain drop-shadow-lg">
                     <div class="flex flex-col">
                         <span class="font-bold text-lg tracking-wide text-teal-400">MAHARAGU</span>
-                        <span class="text-[10px] text-slate-400 uppercase tracking-wider leading-none">MONITORING AP & HANDLING RANGKAIAN GANGGUAN UMUM</span>
+                        <span class="text-[10px] text-slate-400 uppercase tracking-wider leading-none">MONITORING AP &
+                            HANDLING RANGKAIAN GANGGUAN UMUM</span>
                     </div>
                 </div>
 
@@ -185,13 +186,19 @@
                                 class="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors duration-200 ml-4 {{ request()->routeIs('admin.buildings.*') ? 'text-teal-400 bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
                                 <span
                                     class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('admin.buildings.*') ? 'bg-teal-400' : 'bg-slate-600' }}"></span>
-                                <span x-show="sidebarOpen">Data Gedung</span>
+                                <span x-show="sidebarOpen">Kelola Gedung</span>
                             </a>
                             <a href="{{ route('admin.admins.index') }}"
                                 class="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors duration-200 ml-4 {{ request()->routeIs('admin.admins.*') ? 'text-teal-400 bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
                                 <span
                                     class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('admin.admins.*') ? 'bg-teal-400' : 'bg-slate-600' }}"></span>
-                                <span x-show="sidebarOpen">Data Admin</span>
+                                <span x-show="sidebarOpen">Kelola Admin</span>
+                            </a>
+                            <a href="{{ route('admin.unit-kerja.index') }}"
+                                class="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors duration-200 ml-4 {{ request()->routeIs('admin.unit-kerja.*') ? 'text-teal-400 bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
+                                <span
+                                    class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('admin.unit-kerja.*') ? 'bg-teal-400' : 'bg-slate-600' }}"></span>
+                                <span x-show="sidebarOpen">Kelola Unit Kerja</span>
                             </a>
                         </div>
                     </div>
