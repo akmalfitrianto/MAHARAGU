@@ -60,8 +60,8 @@ Ikuti langkah-langkah berikut untuk menjalankan project di komputer lokal:
 
 1.  **Clone Repository**
     ```bash
-    git clone [https://github.com/akmalfitrianto/ticketing-dan-monitoring-AccessPoint-UIN-Antasari-Banjarmasin](https://github.com/akmalfitrianto/ticketing-dan-monitoring-AccessPoint-UIN-Antasari-Banjarmasin)
-    cd nama-repo
+    git clone [https://github.com/akmalfitrianto/MAHARAGU](https://github.com/akmalfitrianto/MAHARAGU)
+    cd MAHARAGU
     ```
 
 2.  **Install Dependencies**
